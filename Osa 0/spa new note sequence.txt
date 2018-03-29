@@ -1,0 +1,13 @@
+title herokuapp spa new note Sequence
+
+browser -> browser : text input
+browser -> browser : submit-button pressed
+browser -> browser : form.onsubmit()
+browser -> browser : notes.push 
+note left of browser : form value
+browser -> browser : redrawNotes()
+browser -> browser : sendToServer() 
+browser -> HTTP Server : POST /new_note_spa
+HTTP Server --> browser : JSON
+browser -> browser : xhttp.onreadystatechange()
+note left of browser : ok, so this is a bit silly\nas we do not know if\nwhat the server answered\nand we have already\nupdated ui

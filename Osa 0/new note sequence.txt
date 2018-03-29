@@ -1,0 +1,8 @@
+title herokuapp new note Sequence
+
+browser -> browser : text input
+browser -> browser : submit-button pressed
+browser -> HTTP Server : parse html doc
+browser -> HTTP Server : POST /new_note
+HTTP Server --> browser : redirect (HTTP status 302)
+note left of browser : redirect to reload\nsee notes sequence

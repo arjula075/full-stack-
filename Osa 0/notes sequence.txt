@@ -1,0 +1,16 @@
+title herokuapp notes Sequence
+
+browser -> HTTP Server : GET /notes
+HTTP Server --> browser : html doc
+browser -> browser : parse html doc
+browser -> HTTP Server : GET /main.css
+HTTP Server --> browser : style sheet
+browser -> browser : parse style sheet
+browser -> HTTP Server : GET /main.js
+HTTP Server --> browser : javascript library
+browser -> browser : parse javascript library
+note left of browser :  since the javascript does contain \ncode not wrapped in "functions" ,\nthe code vwill be run immediately
+browser -> browser : create and initialize xhttp object\nfor XHR call
+browser -> HTTP Server : GET /data.json
+HTTP Server --> browser : JSON response
+browser -> browser : xhttp.onreadystatechange()

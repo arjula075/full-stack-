@@ -1,0 +1,19 @@
+title herokuapp notes single page Sequence
+
+browser -> HTTP Server : GET /spa
+HTTP Server --> browser : html doc
+browser -> browser : parse html doc
+browser -> HTTP Server : GET /main.css
+HTTP Server --> browser : style sheet
+browser -> browser : parse style sheet
+browser -> HTTP Server : GET /spa.js
+HTTP Server --> browser : javascript library
+browser -> browser : parse javascript library
+note left of browser :  since the javascript does contain \ncode not wrapped in "functions" ,\nthe code vwill be run immediately
+browser -> browser : window.onload()
+note left of browser : initializes form.submit() -function
+browser -> HTTP Server : GET /data.json
+HTTP Server --> browser : JSON response
+browser -> browser : xhttp.onreadystatechange()
+note left of browser : calls intialized funtion \nredrawNotes()
+browser -> browser : redrawNotes()
