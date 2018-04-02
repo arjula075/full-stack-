@@ -12,13 +12,41 @@ const App = () => {
 
   return (
     <div>
-      <h1>{kurssi}</h1>
-      <p>{osa1} {tehtavia1}</p>
-      <p>{osa2} {tehtavia2}</p>
-      <p>{osa3} {tehtavia3}</p>
-      <p>yhteensä {tehtavia1 + tehtavia2 + tehtavia3} tehtävää</p>
+      <Otsikko otsikko = {kurssi} />
+      <Sisalto osa = {osa1} tehtavia = {tehtavia1} />
+	  <Sisalto osa = {osa2} tehtavia = {tehtavia2} />
+	  <Sisalto osa = {osa3} tehtavia = {tehtavia3} />
+      <Yhteensa yhteensa = {tehtavia1 + tehtavia2 + tehtavia3}/>
     </div>
   )
+}
+
+const Otsikko = (props) => {
+	return (
+	<div>
+		<h1>{props.otsikko}</h1>
+	</div>
+	)
+}
+
+const Sisalto = (props) => {
+	return (
+	<div>
+		<p>{props.osa} {props.tehtavia}</p>
+	</div>
+	)
+	
+}
+
+const Yhteensa = (props) => {
+	return (
+	<div>
+		<p>yhteensä {props.yhteensa} tehtävää</p>
+	</div>
+	)
+	
+	
+	
 }
 
 ReactDOM.render(
