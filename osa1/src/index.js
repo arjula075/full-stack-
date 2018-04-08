@@ -3,25 +3,33 @@ import ReactDOM from 'react-dom'
 
 const App = () => {
   const kurssi = 'Half Stack -sovelluskehitys'
-  const osa1 = 'Reactin perusteet'
-  const tehtavia1 = 10
-  const osa2 = 'Tiedonvälitys propseilla'
-  const tehtavia2 = 7
-  const osa3 = 'Komponenttien tila'
-  const tehtavia3 = 14
+  const osat = [
+	  {
+		nimi: 'Reactin perusteet',
+		tehtavia: 10
+	  },
+	{
+		nimi: 'Tiedonvälitys propseilla',
+		tehtavia: 7
+	  },
+	{
+		nimi: 'Komponenttien tila',
+		tehtavia: 14
+	  }
+  ]
+
 
   return (
     <div>
       <Otsikko otsikko = {kurssi} />
-      <Sisalto osa = {osa1} tehtavia = {tehtavia1} />
-	  <Sisalto osa = {osa2} tehtavia = {tehtavia2} />
-	  <Sisalto osa = {osa3} tehtavia = {tehtavia3} />
-      <Yhteensa yhteensa = {tehtavia1 + tehtavia2 + tehtavia3}/>
+      <Sisalto osat = {osat} />
+      <Yhteensa osat = {osat}/>
     </div>
   )
 }
 
 const Otsikko = (props) => {
+
 	return (
 	<div>
 		<h1>{props.otsikko}</h1>
@@ -30,18 +38,35 @@ const Otsikko = (props) => {
 }
 
 const Sisalto = (props) => {
+	
+	
+	const sis = props.osat
+
 	return (
-	<div>
-		<p>{props.osa} {props.tehtavia}</p>
-	</div>
+		<div>{
+			sis.map(osa => {
+			return <p>{osa.nimi} {osa.tehtavia}</p>;
+			}
+		)
+		}
+		</div>
 	)
+
 	
 }
 
 const Yhteensa = (props) => {
+	
+	let x = 0;
+	props.osat.forEach((osa) => 
+		{
+			x = x + osa.tehtavia;
+		}
+	) 
+	
 	return (
 	<div>
-		<p>yhteensä {props.yhteensa} tehtävää</p>
+		<p>yhteensä {x} tehtävää</p>
 	</div>
 	)
 	
