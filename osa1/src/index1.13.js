@@ -34,8 +34,6 @@ class App extends React.Component {
         {this.props.anecdotes[this.state.selected].name} : {this.props.anecdotes[this.state.selected].counter}
 		<Nappula onClick={() => this.handleClick()} />
 		<VoteNappula onClick={() => this.handleVoteClick()} />
-		<Tilastot data = {this.state} />
-		
       </div>
     )
   }
@@ -108,49 +106,7 @@ function VoteButton(props) {
   );
 }
 
-const Tilastot = (props) => {
-	
-	console.log('tilastot', props)
-	let paras = ''
-	let suurinAanimaara = 0
-	let kaikkiAanet = 0
-	let prosenttiaAanista = 0
-	console.log('props.data.anecdotes.lenght', props.data.anecdotes.lenght)
-	console.log('props.data.anecdotes', props.data.anecdotes)
-	
-	for (let i = 0; i < props.data.anecdotes.length; i++) {
-		if (props.data.anecdotes[i].counter > suurinAanimaara) {
-			suurinAanimaara = props.data.anecdotes[i].counter
-			paras =  props.data.anecdotes[i].name
-		}
-		kaikkiAanet = kaikkiAanet + props.data.anecdotes[i].counter
-	}
-	
-	if (kaikkiAanet > 0) {
-		prosenttiaAanista = suurinAanimaara / kaikkiAanet * 100
-	}
-	
-	console.log(props)
-	const counter = props.data;
-	if (paras) {
-	return (
-		<div>
-			<h2>eniten hyvä</h2>
-			<span>{paras}, {suurinAanimaara} ääntä, {prosenttiaAanista}% prosenttia aanista</span>
-		</div>
-	)
-	}
-	else {
-		return (
-		<div>
-			<h2>eniten hyvä</h2>
-			<span>ei ääniä</span>
-		</div>
-		)
-	}
-	
-	
-}
+
 
 const anecdotes = [
 	{
