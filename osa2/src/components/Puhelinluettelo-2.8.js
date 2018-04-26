@@ -7,23 +7,18 @@ class PuhelinLuettelo extends React.Component {
 	console.log('p',props)
     this.state = {
 		persons: props.persons,
-		inputValue: props.inputValue,
-		hakuEhto: ''
+		inputValue: props.inputValue
     }
 	this.onSubmit = this.onSubmit.bind(this)
 	this.changeValue = this.changeValue.bind(this)
 	this.changePuhValue = this.changePuhValue.bind(this)
-	this.changeHakuValue = this.changeHakuValue.bind(this)
-	this.checkHakuEhto = this.checkHakuEhto.bind(this)
-
   }
     
     changeValue(event){
 	
 	const changedValue = {
 		name : event.target.value,
-		puh : this.state.inputValue.puh,
-		hakuEhto: this.state.hakuEhto
+		puh : this.state.inputValue.puh
 	}
 	
 	this.setState({
@@ -36,22 +31,13 @@ class PuhelinLuettelo extends React.Component {
 	
 	const changedValue = {
 		puh : event.target.value,
-		name : this.state.inputValue.name,
-		hakuEhto: this.state.hakuEhto
+		name : this.state.inputValue.name
 	}
 	
 	this.setState({
 		inputValue: changedValue
 	 })
 
-  }
-  
-  changeHakuValue(event){
-	  	this.setState({
-		hakuEhto: event.target.value
-	 })
-	 console.log('c',this.state)
-	  
   }
   
     onSubmit(event){
@@ -66,36 +52,10 @@ class PuhelinLuettelo extends React.Component {
 	  })
   }
   
-  checkHakuEhto(person) {
-	  console.log('H',person.name, this.state.hakuEhto)
-	  let hakuEhto = this.state.hakuEhto;
-	  if (typeof hakuEhto === 'undefined') {
-		  return true
-	  }
-	  if (hakuEhto === '') {
-		  return true
-	  }
-	  let result = (person.name.startsWith(this.state.hakuEhto));
-	  console.log(person.name, this.hakuEhto, result)
-	  return result
-  }
-  
   
   render() {
-	 console.log('rc',this.state)
-	const namesToShow =
-    !this.state.hakuEhto ?
-      this.state.persons.persons :
-      this.state.persons.persons.filter(this.checkHakuEhto)
-	
-	console.log('render', namesToShow) 	
-	  
     return (
         <div>
-			<div>
-				hae: <input value={this.state.hakuEhto} onChange={this.changeHakuValue}/>
-			</div>
-
 			<h2>Puhelinluettelo</h2>
 			<form onSubmit={this.onSubmit}>
 			<div>
@@ -106,7 +66,7 @@ class PuhelinLuettelo extends React.Component {
 			</div>
 			<AddButton />
 			</form>
-			<Numerot persons = {namesToShow} />
+			<Numerot persons = {this.state.persons} />
 		</div>
     )
   }
@@ -124,7 +84,7 @@ const Numerot = (props) => {
 		<div>
 		<h2>Numerot</h2>
 		{
-			props.persons.map(osa => {
+			props.persons.persons.map(osa => {
 			return (
 				 <div key={osa.name}>
 					<p >{osa.name}, {osa.puh}</p>
