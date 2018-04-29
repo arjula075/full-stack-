@@ -1,5 +1,6 @@
 // 20 min 26.04
 import React from 'react';
+import Numerot from './Numerot'
 
 class PuhelinLuettelo extends React.Component {
   constructor(props) {
@@ -116,26 +117,6 @@ const AddButton = () => {
 				return (<div>
 					<button type="submit">lisää</button>
 				</div>)
-}
-
-const Numerot = (props) => {
-		console.log('n', props)
-		return (
-		<div>
-		<h2>Numerot</h2>
-		{
-			props.persons.map(osa => {
-			return (
-				 <div key={osa.name}>
-					<p >{osa.name}, {osa.puh}</p>
-				 </div>
-				)
-			}
-		)
-		}
-		</div>
-	)
-	
 }
 
 export default PuhelinLuettelo

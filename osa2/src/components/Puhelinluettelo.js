@@ -1,10 +1,12 @@
 // 20 min 26.04
 import React from 'react';
+import Numerot from './Numerot'
+import HakuLomake from './HakuLomake'
 
 class PuhelinLuettelo extends React.Component {
   constructor(props) {
     super(props)
-	console.log('p',props)
+
     this.state = {
 		persons: props.persons,
 		inputValue: props.inputValue,
@@ -46,16 +48,16 @@ class PuhelinLuettelo extends React.Component {
 
   }
   
-  changeHakuValue(event){
-	  	this.setState({
-		hakuEhto: event.target.value
+  changeHakuValue(data){
+
+	 this.setState({
+		hakuEhto: data
 	 })
-	 console.log('c',this.state)
 	  
   }
   
     onSubmit(event){
-		console.log('', this.state)
+
 	  event.preventDefault()
 	  const value = this.state.inputValue
 	  // so shorthanding the if statement
@@ -76,26 +78,23 @@ class PuhelinLuettelo extends React.Component {
 		  return true
 	  }
 	  let result = (person.name.startsWith(this.state.hakuEhto));
-	  console.log(person.name, this.hakuEhto, result)
+
 	  return result
   }
   
   
   render() {
-	 console.log('rc',this.state)
+
 	const namesToShow =
     !this.state.hakuEhto ?
       this.state.persons.persons :
       this.state.persons.persons.filter(this.checkHakuEhto)
 	
-	console.log('render', namesToShow) 	
+	
 	  
     return (
         <div>
-			<div>
-				hae: <input value={this.state.hakuEhto} onChange={this.changeHakuValue}/>
-			</div>
-
+			<HakuLomake hakuEhto = {this.state.hakuEhto}  changeHakuValue = {this.changeHakuValue} />
 			<h2>Puhelinluettelo</h2>
 			<form onSubmit={this.onSubmit}>
 			<div>
@@ -118,24 +117,5 @@ const AddButton = () => {
 				</div>)
 }
 
-const Numerot = (props) => {
-		console.log('n', props)
-		return (
-		<div>
-		<h2>Numerot</h2>
-		{
-			props.persons.map(osa => {
-			return (
-				 <div key={osa.name}>
-					<p >{osa.name}, {osa.puh}</p>
-				 </div>
-				)
-			}
-		)
-		}
-		</div>
-	)
-	
-}
 
 export default PuhelinLuettelo
