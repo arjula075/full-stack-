@@ -2,6 +2,7 @@
 import React from 'react';
 import Numerot from './Numerot'
 
+
 class PuhelinLuettelo extends React.Component {
   constructor(props) {
     super(props)
@@ -80,7 +81,7 @@ class PuhelinLuettelo extends React.Component {
 	  console.log(person.name, this.hakuEhto, result)
 	  return result
   }
-  
+    
   
   render() {
 	 console.log('rc',this.state)
