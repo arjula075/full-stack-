@@ -1,8 +1,9 @@
 import React from 'react';
 
 const CountryList = (props) => {
-		
-		const countries = props.countryList
+		console.log('p2', props)
+		const {countries, onClick} = props
+		console.log('countries', countries)
 		
 		if (typeof countries !== 'undefined') {
 			return (
@@ -11,8 +12,8 @@ const CountryList = (props) => {
 			{
 				countries.map(country => {
 				return (
-					 <div key={country.name}>
-						<p >{country.name}</p>
+					 <div key={country.name} >
+						<button type="button" value={country.name} onClick={onClick}>{country.name}</button>
 					 </div>
 					)
 				}
