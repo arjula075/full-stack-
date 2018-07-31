@@ -1,9 +1,15 @@
+// 31.07.2018
+
 const http = require('http')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const Blog = require('./models/blog')
+const blogsRouter = require('./controllers/blogs')
+const middleware = require('./utils/middleware')
+app.use('/api/blogs', blogsRouter)
 
 app.use(cors())
 app.use(express.static('build'))
@@ -13,18 +19,6 @@ morgan.token('payload', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :payload :status :response-time ms'))
 
 const mongoose = require('mongoose')
-
-const Blog = mongoose.model('Blog', {
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-module.exports = Blog
-
-app.use(cors())
-app.use(bodyParser.json())
 
 const initiateConnection = () => {
 	try {
@@ -48,7 +42,7 @@ const initiateConnection = () => {
 				if (err) {
 					return console.log(err);
 				}
-				url = `mongodb://admin:${data}@ds261521.mlab.com:61521/fs_blog_test`	
+				url = `mongodb://admin:${data}@ds261521.mlab.com:61521/fs_blog_test`
 				console.log('url', url)
 				mongoose.connect(url)
 			})
@@ -62,28 +56,10 @@ const initiateConnection = () => {
 
 initiateConnection()
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
+app.use(cors())
+app.use(bodyParser.json())
 
-app.get('/api/blogs', (request, response) => {
-  console.log('in get all')
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
-
-app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
-})
+app.use(middleware.error)
 
 const PORT = 3003
 app.listen(PORT, () => {
