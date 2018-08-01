@@ -103,6 +103,49 @@ describe('testing finding favourite blog', () =>{
 		console.log(result._id)
 		// why on earth would I be comparing whole object
 		// when I have identification at my disposal
-		expect(result._id).toBe('5a422b3a1b54a676234d17f9')
+		expect(result._id).toEqual('5a422b3a1b54a676234d17f9')
+	})
+})
+
+describe('testing finding most productive author', () =>{
+	// 4.6
+	test('undefined list', () => {
+		const result = listHelper.mostBlogs()
+		expect(result).toBe(undefined)
+	})
+	
+	test('non list', () => {
+		const result = listHelper.mostBlogs('Hello world')
+		expect(result).toBe(undefined)
+	})
+	test('empty list', () => {
+		const result = listHelper.mostBlogs('Hello world')
+		expect(result).toBe(undefined)
+	})
+
+	test('correct author', () => {
+		const result = listHelper.mostBlogs(blogs)
+		const expectedResult = { author: 'Robert C. Martin', blogs: 3 }
+		expect(result.author).toEqual(expectedResult.author)
+	})
+	test('correct number', () => {
+		const result = listHelper.mostBlogs(blogs)
+		const expectedResult = { author: 'Robert C. Martin', blogs: 3 }
+		expect(result.blogs).toEqual(expectedResult.blogs)
+	})
+})
+
+describe('testing finding most lovable author', () =>{
+	// 4.7
+	test('correct author', () => {
+		const result = listHelper.mostLikes(blogs)
+		console.log(result)
+		const expectedResult = { author: 'Edsger W. Dijkstra', likes: 17 }
+		expect(result.author).toEqual(expectedResult.author)
+	})
+	test('correct number', () => {
+		const result = listHelper.mostLikes(blogs)
+		const expectedResult = { author: 'Edsger W. Dijkstra', likes: 17 }
+		expect(result.likes).toEqual(expectedResult.likes)
 	})
 })

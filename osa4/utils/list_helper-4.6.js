@@ -27,29 +27,11 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs  = (blogs) => {
-	
 	if (validateBlogs(blogs)) {
 			const writers = blogs.reduce((writerArray, blog) => createWriterArray(writerArray, blog), [])
 			console.log('writers', writers)
 			if (validateBlogs(writers)) {
 				return writers.reduce((productiveWriter, writer) => compareAuthors(productiveWriter, writer), new Object())
-			}
-			else {
-				return
-			}
-	}
-	else {
-		return
-	}
-	
-}
-
-const mostLikes = (blogs) => {
-		if (validateBlogs(blogs)) {
-			const writers = blogs.reduce((writerArray, blog) => createWriterArray(writerArray, blog), [])
-			console.log('writers', writers)
-			if (validateBlogs(writers)) {
-				return writers.reduce((productiveWriter, writer) => compareAuthorsByLikes(productiveWriter, writer), new Object())
 			}
 			else {
 				return
@@ -71,13 +53,11 @@ const createWriterArray = (writerArray, blog) => {
 	if (typeof writer == 'undefined' || writer < 0) {
 		newWriter = {
 			author : blog.author,
-			blogs : 1,
-			likes: blog.likes
+			blogs : 1
 		}
 		writerArray.push(newWriter)
 	}
 	else {
-		writerArray[writer].likes = writerArray[writer].likes + blog.likes
 		writerArray[writer].blogs = writerArray[writer].blogs + 1
 	}
 	return writerArray
@@ -114,21 +94,6 @@ const compareAuthors = (productiveWriter, writer) => {
 	}
 }
 
-const compareAuthorsByLikes = (productiveWriter, writer) => {
-	
-	const oldFav = productiveWriter.likes
-	if (!oldFav) {
-		return writer
-	}
-	const challenger = writer.likes
-	if (challenger > oldFav) {
-		return writer
-	}
-	else {
-		return productiveWriter
-	}
-}
-
 const validateBlogs = (blogs) => {
 	
 	if (blogs) {
@@ -151,5 +116,5 @@ const validateBlogs = (blogs) => {
 }
 
 module.exports = {
-  dummy, numberOfLikes, favoriteBlog, mostBlogs, mostLikes
+  dummy, numberOfLikes, favoriteBlog, mostBlogs
 }
