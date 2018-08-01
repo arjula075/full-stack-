@@ -61,7 +61,7 @@ describe('initial test', () =>{
 })
 
 describe('testing number of likes', () =>{
-	//
+	// 4.4
 	test('undefined list', () => {
 		const result = listHelper.numberOfLikes()
 		expect(result).toBe(0)
@@ -79,5 +79,30 @@ describe('testing number of likes', () =>{
 	test('correct list', () => {
 		const result = listHelper.numberOfLikes(blogs)
 		expect(result).toBe(36)
+	})
+})
+
+describe('testing finding favourite blog', () =>{
+	// 4.5
+	test('undefined list', () => {
+		const result = listHelper.favoriteBlog()
+		expect(result).toBe(undefined)
+	})
+	
+	test('non list', () => {
+		const result = listHelper.favoriteBlog('Hello world')
+		expect(result).toBe(undefined)
+	})
+	test('empty list', () => {
+		const result = listHelper.favoriteBlog('Hello world')
+		expect(result).toBe(undefined)
+	})
+
+	test('correct list', () => {
+		const result = listHelper.favoriteBlog(blogs)
+		console.log(result._id)
+		// why on earth would I be comparing whole object
+		// when I have identification at my disposal
+		expect(result._id).toBe('5a422b3a1b54a676234d17f9')
 	})
 })
