@@ -14,6 +14,10 @@ app.use('/api/blogs', blogsRouter)
 app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
+const config = require('./utils/config')
+
+
+const PORT = config.port
 
 morgan.token('payload', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :payload :status :response-time ms'))
@@ -23,29 +27,15 @@ const mongoose = require('mongoose')
 const initiateConnection = () => {
 	try {
 		let url = undefined
-		console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 		if ( process.env.NODE_ENV === 'production' ) {
 			console.log('in production')
-			require('dotenv').config()
-			url = process.env.MONGODB_URI
-			console.log('url', url)
+			url = config.mongoUrl
 			mongoose.connect(url)
 		}
 		else {
-			// get the password
-			console.log('somewhere else')
-			console.log('getting password')
-			let psw = ''
-			fs = require('fs');
-			fs.readFile('password.txt', 'utf8', function (err,data) {
-				console.log('password getting',err, data)
-				if (err) {
-					return console.log(err);
-				}
-				url = `mongodb://admin:${data}@ds261521.mlab.com:61521/fs_blog_test`
-				console.log('url', url)
-				mongoose.connect(url)
-			})
+			console.log('in somewhere else')
+			url = config.mongoUrl
+			mongoose.connect(url)
 		}
 
 	}
@@ -61,7 +51,16 @@ app.use(bodyParser.json())
 
 app.use(middleware.error)
 
-const PORT = 3003
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+const server = http.createServer(app)
+
+server.listen(config.port, () => {
+	console.log(`Server running on port ${config.port}`)
 })
+
+server.on('close', () => {
+	mongoose.connection.close()
+})
+
+module.exports = {
+  app, server
+}
