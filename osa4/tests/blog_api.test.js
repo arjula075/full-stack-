@@ -136,7 +136,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
-			.send(	{"author": "Graham Chapman"})
+			.send(	{"": "Graham Chapman"})
 			.expect(400)
 		})
 
