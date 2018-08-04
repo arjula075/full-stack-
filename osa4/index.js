@@ -49,11 +49,6 @@ const initiateConnection = () => {
 
 initiateConnection()
 
-app.use(cors())
-app.use(bodyParser.json())
-
-app.use(middleware.error)
-
 const server = http.createServer(app)
 
 server.listen(config.port, () => {

@@ -20,14 +20,21 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async(request, response) => {
   try {
-
     const blog = new Blog(request.body)
-    await blog.save()
-    response.status(201).json(result)
+    if (typeof blog.likes == 'undefined') {
+      blog.likes = 0
+    }
+    if (!blog.url || !blog.title) {
+      response.status(400).json('INCOMPLETE DATA')
+    }
+    else {
+      await blog.save()
+      response.status(201).json('CREATED')
+    }
 
 
-}
-catch (err) {
+  }
+  catch (err) {
     console.log(err);
     response.status(500).json('vituiks män')
   }

@@ -30,6 +30,14 @@ const addedBlog =
 		"likes": 1
 	}
 
+	const noLikes =
+		{
+			"title": "This is an ex-parrot",
+			"author": "Graham Chapman",
+			"url": "https://jotain.jossain"
+		}
+
+
 beforeAll(async () => {
 	console.log('starting beforeAll', new Date())
 	// empty database
@@ -86,8 +94,6 @@ describe('blog API tests', () => {
 	describe('post part of API', () => {
 
 		test('valid new object can be added', async () => {
-			console.log('addedBlog', addedBlog);
-			console.log('api', api.post);
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
@@ -105,6 +111,35 @@ describe('blog API tests', () => {
   		expect(contents).toContainEqual('This is getting way too silly')
 
 		})
+		test('no likes', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.send(noLikes)
+
+			const response = await api
+				.get('/api/blogs')
+			const content = response.body.find(r => r.title === 'This is an ex-parrot')
+			console.log('content', content)
+
+			expect(content.likes).toBe(0)
+
+		})
+		test('no title should return 400', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.send(	{"author": "Graham Chapman"})
+			.expect(400)
+		})
+		test('no url should return 400', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.send(	{"author": "Graham Chapman"})
+			.expect(400)
+		})
+
 	})
 })
 
