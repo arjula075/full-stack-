@@ -18,6 +18,25 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs.map(formatBlog))
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+    const blog = await Blog.findById(request.params.id)
+    console.log('blog', blog)
+    if (blog) {
+      response.json(formatBlog(blog))
+    }
+    else {
+      response.status(404).json("NOT FOUND")
+    }
+
+})
+
+
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog
+	    .findByIdAndRemove(request.params.id)
+    response.status(200).json("OK")
+})
+
 blogsRouter.post('/', async(request, response) => {
   try {
     const blog = new Blog(request.body)

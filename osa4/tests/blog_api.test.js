@@ -5,6 +5,8 @@ const config = require('../utils/config')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 
+let idToBeDeleted = ''
+
 
 // setting up test data
 const initialBlogs = [
@@ -141,6 +143,35 @@ describe('blog API tests', () => {
 		})
 
 	})
+
+	describe('delete part of API', () => {
+		test('deleting addedBlog', async () => {
+			let response = await api
+				.get('/api/blogs')
+			const content = response.body.find(r => r.title === 'This is an ex-parrot')
+			idToBeDeleted = content.id
+			const url = '/api/blogs/' + content.id
+
+			//first we test that it returns now something
+			response = await api
+				.get('/api/blogs/' + idToBeDeleted)
+					.expect(200)
+
+			response = await api
+				.delete('/api/blogs/' + idToBeDeleted)
+					.expect(200)
+
+		})
+		test('testing that addedBlog cant be found again', async () => {
+			response = await api
+				.get('/api/blogs/' + idToBeDeleted)
+					.expect(404)
+
+		})
+
+
+	})
+
 })
 
 afterAll(() => {
