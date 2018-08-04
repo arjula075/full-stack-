@@ -9,12 +9,15 @@ const cors = require('cors')
 const Blog = require('./models/blog')
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
-app.use('/api/blogs', blogsRouter)
+
 
 app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
 const config = require('./utils/config')
+
+app.use('/api/blogs', blogsRouter)
+app.use(middleware.logger)
 
 
 const PORT = config.port

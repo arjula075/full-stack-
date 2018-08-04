@@ -3,14 +3,14 @@
 const mongoose = require('mongoose')
 
 const blogSchema = new mongoose.Schema({
-    title: String,
+  title: String,
 	author: String,
 	url: String,
 	likes: Number
 })
 
  blogSchema.statics.format = function(blog) {
-    const obj =  { 
+    const obj =  {
 		title: blog.title,
 		author: blog.author,
 		url: blog.url,

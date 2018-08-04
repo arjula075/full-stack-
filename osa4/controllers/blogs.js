@@ -14,20 +14,22 @@ const formatBlog = (blog) => {
 }
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({})
-
+    const blogs = await Blog.find({})
     response.json(blogs.map(formatBlog))
 })
 
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
+blogsRouter.post('/', async(request, response) => {
+  try {
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
+    const blog = new Blog(request.body)
+    await blog.save()
+    response.status(201).json(result)
+
+
+}
+catch (err) {
+    console.log(err);
+    response.status(500).json('vituiks män')
+  }
 })
-
 module.exports = blogsRouter
