@@ -20,7 +20,6 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.get('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id)
-    console.log('blog', blog)
     if (blog) {
       response.json(formatBlog(blog))
     }
@@ -58,4 +57,40 @@ blogsRouter.post('/', async(request, response) => {
     response.status(500).json('vituiks män')
   }
 })
+
+blogsRouter.put('/:id', async(request, response) => {
+
+	const updatedBlog = request.body
+	console.log('updatedBLog', updatedBlog)
+
+  if (validateBlog(updatedBlog)) {
+	   await Blog
+	    .findByIdAndUpdate(request.params.id, updatedBlog, { new: true } )
+      response.json(formatBlog(updatedBlog))
+  }
+  else {
+    response.status(400).json('INCOMPLETE DATA')
+  }
+
+})
+
+const validateBlog = (blog) => {
+
+  if (!blog.title) {
+    return false
+  }
+  if (!blog.author) {
+    return false
+  }
+  if (!blog.url) {
+    return false
+  }
+  if (!blog.title) {
+    blog.title = 0;
+    return true
+  }
+  return true
+}
+
+
 module.exports = blogsRouter

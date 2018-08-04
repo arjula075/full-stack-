@@ -41,7 +41,6 @@ const addedBlog =
 
 
 beforeAll(async () => {
-	console.log('starting beforeAll', new Date())
 	// empty database
 
 	initiateConnection()
@@ -55,7 +54,6 @@ beforeAll(async () => {
 
 	// close connection after date has been inserted
 	//mongoose.connection.close()
-	console.log('ending beforeAll', new Date())
 
 })
 
@@ -122,7 +120,6 @@ describe('blog API tests', () => {
 			const response = await api
 				.get('/api/blogs')
 			const content = response.body.find(r => r.title === 'This is an ex-parrot')
-			console.log('content', content)
 
 			expect(content.likes).toBe(0)
 
@@ -166,9 +163,70 @@ describe('blog API tests', () => {
 			response = await api
 				.get('/api/blogs/' + idToBeDeleted)
 					.expect(404)
+		})
+	})
+	describe('put part of API', () => {
+		// first we put that one again there
+		test('put updated item there', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.send(noLikes)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+		})
+
+		// then we get the id
+		test('get the id', async () => {
+		let response = await api
+			.get('/api/blogs')
+			const content = response.body.find(r => r.title === 'This is an ex-parrot')
+			idToBeDeleted = content.id
+			console.log('idToBeDeleted', idToBeDeleted);
+			console.log('idToBeDeleted', typeof idToBeDeleted);
+			expect(idToBeDeleted).not.toBeUndefined()
 
 		})
 
+		// then we try to update it with different malformatted data
+
+		test('no title', async () => {
+			noLikes.title = undefined
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.send(noLikes)
+			.expect(400)
+		})
+		test('no author', async () => {
+			noLikes.title ='This is my theory, and it is mine'
+			noLikes.author = undefined
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.send(noLikes)
+			.expect(400)
+		})
+		test('no url', async () => {
+			noLikes.author = 'Eric Idle'
+			noLikes.url = undefined
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.send(noLikes)
+			.expect(400)
+		})
+
+
+		// then with real data
+		test('correct data', async () => {
+			noLikes.url = 'https://muuta.muualla'
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.send(noLikes)
+			.expect(200)
+		})
 
 	})
 
@@ -184,7 +242,6 @@ const initiateConnection = () => {
 	try {
 		let url = undefined
 		url = config.mongoUrl
-		console.log('url', url)
 		mongoose.connect(url)
 	}
 	catch (e) {

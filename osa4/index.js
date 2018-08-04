@@ -31,12 +31,10 @@ const initiateConnection = () => {
 	try {
 		let url = undefined
 		if ( process.env.NODE_ENV === 'production' ) {
-			console.log('in production')
 			url = config.mongoUrl
 			mongoose.connect(url)
 		}
 		else {
-			console.log('in somewhere else')
 			url = config.mongoUrl
 			mongoose.connect(url)
 		}
