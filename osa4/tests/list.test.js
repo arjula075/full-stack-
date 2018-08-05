@@ -48,13 +48,13 @@ const blogs = [
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
     likes: 2,
     __v: 0
-  }  
+  }
 ]
 
-describe.skip('list helpers', () => {
+describe('list helpers', () => {
 	describe('initial test', () =>{
 		test('dummy is called', () => {
-		
+
 
 		const result = listHelper.dummy(blogs)
 		expect(result).toBe(1)
@@ -67,7 +67,7 @@ describe.skip('list helpers', () => {
 			const result = listHelper.numberOfLikes()
 			expect(result).toBe(0)
 		})
-		
+
 		test('non list', () => {
 			const result = listHelper.numberOfLikes('Hello world')
 			expect(result).toBe(0)
@@ -89,7 +89,7 @@ describe.skip('list helpers', () => {
 			const result = listHelper.favoriteBlog()
 			expect(result).toBe(undefined)
 		})
-		
+
 		test('non list', () => {
 			const result = listHelper.favoriteBlog('Hello world')
 			expect(result).toBe(undefined)
@@ -114,7 +114,7 @@ describe.skip('list helpers', () => {
 			const result = listHelper.mostBlogs()
 			expect(result).toBe(undefined)
 		})
-		
+
 		test('non list', () => {
 			const result = listHelper.mostBlogs('Hello world')
 			expect(result).toBe(undefined)

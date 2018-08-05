@@ -3,6 +3,7 @@ const { app, server } = require('../index')
 const api = supertest(app)
 const config = require('../utils/config')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const mongoose = require('mongoose')
 
 let idToBeDeleted = ''
@@ -39,6 +40,12 @@ const addedBlog =
 			"url": "https://jotain.jossain"
 		}
 
+		const newUser = {
+			username: 'mluukkai',
+			name: 'Matti Luukkainen',
+			password: 'salainen'
+		}
+
 
 beforeAll(async () => {
 	// empty database
@@ -46,8 +53,12 @@ beforeAll(async () => {
 	initiateConnection()
 
 	await Blog.remove({})
+	await User.remove({})
+
 
 	// add initial data
+	const user = new User({ username: 'root', password: 'sekret' })
+	await user.save()
 	const blogObjects = initialBlogs.map(blog => new Blog(blog))
 	const promiseArray = blogObjects.map(blog => blog.save())
 	await Promise.all(promiseArray)
@@ -232,11 +243,50 @@ describe('blog API tests', () => {
 
 })
 
+describe('user part of API', () => {
+	test('POST /api/users succeeds with a fresh username', async () => {
+		const usersBeforeOperation = await usersInDb()
+		console.log('usersBeforeOperation', usersBeforeOperation)
+		const newUser = {
+			username: 'mluukkai',
+			name: 'Matti Luukkainen',
+			password: 'salainen'
+		}
+
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const usersAfterOperation = await usersInDb()
+		console.log('usersAfterOperation', usersAfterOperation)
+		for (let i = 0; i < 10; i++) {
+			console.log('')
+		}
+		expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
+		const usernames = usersAfterOperation.map(u=>u.username)
+		expect(usernames).toContain(newUser.username)
+	})
+
+})
+
 afterAll(() => {
 	if (server) {
 		server.close()
 	}
 })
+
+const usersInDb = async() => {
+	try {
+    const users = await User.find({})
+		return users.map(user => User.format(user))
+
+	}
+	catch (e) {
+		console.log(e)
+	}
+}
 
 const initiateConnection = () => {
 	try {
