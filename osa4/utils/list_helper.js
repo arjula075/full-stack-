@@ -1,3 +1,4 @@
+const config = require('../utils/config')
 
 const dummy = (blogs) => {
   return 1
@@ -6,7 +7,7 @@ const dummy = (blogs) => {
 const numberOfLikes = (blogs) => {
 	// ok, so basically these other cases should return something else than zero
 	// but I am lazy
-	
+
 	// and refactoring it in 4.5
 	if (validateBlogs(blogs)) {
 			return blogs.reduce((sum, blog) => sum + blog.likes, 0)
@@ -23,14 +24,13 @@ const favoriteBlog = (blogs) => {
 	else {
 		return
 	}
-	
+
 }
 
 const mostBlogs  = (blogs) => {
-	
+
 	if (validateBlogs(blogs)) {
 			const writers = blogs.reduce((writerArray, blog) => createWriterArray(writerArray, blog), [])
-			console.log('writers', writers)
 			if (validateBlogs(writers)) {
 				return writers.reduce((productiveWriter, writer) => compareAuthors(productiveWriter, writer), new Object())
 			}
@@ -41,13 +41,12 @@ const mostBlogs  = (blogs) => {
 	else {
 		return
 	}
-	
+
 }
 
 const mostLikes = (blogs) => {
 		if (validateBlogs(blogs)) {
 			const writers = blogs.reduce((writerArray, blog) => createWriterArray(writerArray, blog), [])
-			console.log('writers', writers)
 			if (validateBlogs(writers)) {
 				return writers.reduce((productiveWriter, writer) => compareAuthorsByLikes(productiveWriter, writer), new Object())
 			}
@@ -58,11 +57,11 @@ const mostLikes = (blogs) => {
 	else {
 		return
 	}
-	
+
 }
 
 const createWriterArray = (writerArray, blog) => {
-	
+
 	if (typeof writerArray == 'undefined') {
 		writerArray = []
 	}
@@ -81,11 +80,11 @@ const createWriterArray = (writerArray, blog) => {
 		writerArray[writer].blogs = writerArray[writer].blogs + 1
 	}
 	return writerArray
-	
+
 }
 
 const compareBlogs = (favouriteBlog, blog) => {
-	
+
 	const oldFav = favouriteBlog.likes
 	if (!oldFav) {
 		return blog
@@ -100,7 +99,7 @@ const compareBlogs = (favouriteBlog, blog) => {
 }
 
 const compareAuthors = (productiveWriter, writer) => {
-	
+
 	const oldFav = productiveWriter.blogs
 	if (!oldFav) {
 		return writer
@@ -115,7 +114,7 @@ const compareAuthors = (productiveWriter, writer) => {
 }
 
 const compareAuthorsByLikes = (productiveWriter, writer) => {
-	
+
 	const oldFav = productiveWriter.likes
 	if (!oldFav) {
 		return writer
@@ -130,7 +129,7 @@ const compareAuthorsByLikes = (productiveWriter, writer) => {
 }
 
 const validateBlogs = (blogs) => {
-	
+
 	if (blogs) {
 		if (Array.isArray(blogs)) {
 			if (blogs.length > 0) {
@@ -147,7 +146,7 @@ const validateBlogs = (blogs) => {
 	else {
 		return false
 	}
-	
+
 }
 
 module.exports = {

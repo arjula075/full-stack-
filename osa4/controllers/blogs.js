@@ -1,27 +1,20 @@
 // 31.07.2018
 
 const blogsRouter = require('express').Router()
+const mongoose = require('mongoose')
 const Blog = require('../models/blog')
-
-const formatBlog = (blog) => {
-  return {
-    	title: blog.title,
-		author: blog.author,
-		url: blog.url,
-		likes: blog.likes,
-		id: blog._id
-  }
-}
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({})
-    response.json(blogs.map(formatBlog))
+    .populate('user')
+    response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id)
     if (blog) {
-      response.json(formatBlog(blog))
+      response.json(Blog.format(blog))
     }
     else {
       response.status(404).json("NOT FOUND")
@@ -38,6 +31,19 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.post('/', async(request, response) => {
   try {
+
+    // for 4.17, get the first user
+    let userId = undefined
+    const users = await User.find({})
+    if (users === undefined || users.length == 0) {
+      // array empty or does not exist
+      console.log('no users')
+    }
+    else {
+      userId = users[0]
+      request.body.user = userId.id
+    }
+
     const blog = new Blog(request.body)
     if (typeof blog.likes == 'undefined') {
       blog.likes = 0
@@ -46,7 +52,9 @@ blogsRouter.post('/', async(request, response) => {
       response.status(400).json('INCOMPLETE DATA')
     }
     else {
-      await blog.save()
+      const savedBlog = await blog.save()
+      userId.blogs = userId.blogs.concat(savedBlog.id)
+      await userId.save()
       response.status(201).json('CREATED')
     }
 
@@ -61,12 +69,11 @@ blogsRouter.post('/', async(request, response) => {
 blogsRouter.put('/:id', async(request, response) => {
 
 	const updatedBlog = request.body
-	console.log('updatedBLog', updatedBlog)
 
   if (validateBlog(updatedBlog)) {
 	   await Blog
 	    .findByIdAndUpdate(request.params.id, updatedBlog, { new: true } )
-      response.json(formatBlog(updatedBlog))
+      response.json(Blog.format(updatedBlog))
   }
   else {
     response.status(400).json('INCOMPLETE DATA')

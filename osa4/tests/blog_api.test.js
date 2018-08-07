@@ -7,6 +7,7 @@ const User = require('../models/user')
 const mongoose = require('mongoose')
 
 let idToBeDeleted = ''
+let initialUserID = ''
 
 
 // setting up test data
@@ -57,14 +58,19 @@ beforeAll(async () => {
 
 
 	// add initial data
-	const user = new User({ username: 'root', password: 'sekret' })
+	const user = new User({ username: 'root', name: 'Test user', password: 'sekret' })
 	await user.save()
-	const blogObjects = initialBlogs.map(blog => new Blog(blog))
-	const promiseArray = blogObjects.map(blog => blog.save())
-	await Promise.all(promiseArray)
+	initialUserID = user.id
+	// it seems that it works with the API, but test is broken
+	// so, even though it is a bit stupid, I'll refactor the code so
+	// the we use API...
+	for (let i = 0; i < initialBlogs.length; i++) {
+		const newBlog = await api
+		.post('/api/blogs')
+		.set('data-type', 'application/json')
+		.send(initialBlogs[i])
+	}
 
-	// close connection after date has been inserted
-	//mongoose.connection.close()
 
 })
 
@@ -75,7 +81,6 @@ describe('blog API tests', () => {
 	    	.get('/api/blogs')
 	    	.expect(200)
 	    	.expect('Content-Type', /application\/json/)
-
 			})
 
 			test('blogs contain correct number', async () => {
@@ -100,11 +105,19 @@ describe('blog API tests', () => {
 				const contents = response.body.map(r => r.author)
 				expect(contents).toContainEqual('John Cleese')
 			})
+			test('blogs contain correct user', async () => {
+				const response = await api
+							.get('/api/blogs')
+				config.log('body', JSON.stringify(response.body));
+				const contents = response.body.map(r => r.user.username)
+				expect(contents).toContainEqual('root')
+			})
 		})
 
 	describe('post part of API', () => {
 
 		test('valid new object can be added', async () => {
+			addedBlog.user = initialUserID
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
@@ -123,6 +136,7 @@ describe('blog API tests', () => {
 
 		})
 		test('no likes', async () => {
+			noLikes.user = initialUserID
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
@@ -154,11 +168,14 @@ describe('blog API tests', () => {
 
 	describe('delete part of API', () => {
 		test('deleting addedBlog', async () => {
+
+			// get some ID
 			let response = await api
 				.get('/api/blogs')
+
 			const content = response.body.find(r => r.title === 'This is an ex-parrot')
-			idToBeDeleted = content.id
-			const url = '/api/blogs/' + content.id
+			idToBeDeleted = content._id
+			const url = '/api/blogs/' + content._id
 
 			//first we test that it returns now something
 			response = await api
@@ -192,9 +209,7 @@ describe('blog API tests', () => {
 		let response = await api
 			.get('/api/blogs')
 			const content = response.body.find(r => r.title === 'This is an ex-parrot')
-			idToBeDeleted = content.id
-			console.log('idToBeDeleted', idToBeDeleted);
-			console.log('idToBeDeleted', typeof idToBeDeleted);
+			idToBeDeleted = content._id
 			expect(idToBeDeleted).not.toBeUndefined()
 
 		})
@@ -244,15 +259,29 @@ describe('blog API tests', () => {
 })
 
 describe('user part of API', () => {
+
+	test('POST /api/users succeeds with a no password', async () => {
+
+		newUser.password = undefined
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+
+	})
+
+	test('POST /api/users succeeds with a too short password', async () => {
+		newUser.password = 'NA'
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+	})
+
 	test('POST /api/users succeeds with a fresh username', async () => {
 		const usersBeforeOperation = await usersInDb()
-		console.log('usersBeforeOperation', usersBeforeOperation)
-		const newUser = {
-			username: 'mluukkai',
-			name: 'Matti Luukkainen',
-			password: 'salainen'
-		}
 
+		newUser.password = 'salasana'
 		await api
 			.post('/api/users')
 			.send(newUser)
@@ -260,10 +289,6 @@ describe('user part of API', () => {
 			.expect('Content-Type', /application\/json/)
 
 		const usersAfterOperation = await usersInDb()
-		console.log('usersAfterOperation', usersAfterOperation)
-		for (let i = 0; i < 10; i++) {
-			console.log('')
-		}
 		expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
 		const usernames = usersAfterOperation.map(u=>u.username)
 		expect(usernames).toContain(newUser.username)

@@ -1,5 +1,5 @@
 const listHelper = require('../utils/list_helper')
-
+const config = require('../utils/config')
 const blogs = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -101,7 +101,6 @@ describe('list helpers', () => {
 
 		test('correct list', () => {
 			const result = listHelper.favoriteBlog(blogs)
-			console.log(result._id)
 			// why on earth would I be comparing whole object
 			// when I have identification at my disposal
 			expect(result._id).toEqual('5a422b3a1b54a676234d17f9')
@@ -140,7 +139,6 @@ describe('list helpers', () => {
 		// 4.7
 		test('correct author', () => {
 			const result = listHelper.mostLikes(blogs)
-			console.log(result)
 			const expectedResult = { author: 'Edsger W. Dijkstra', likes: 17 }
 			expect(result.author).toEqual(expectedResult.author)
 		})
