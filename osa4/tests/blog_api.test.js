@@ -5,9 +5,11 @@ const config = require('../utils/config')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 let idToBeDeleted = ''
 let initialUserID = ''
+let rootToken = undefined
 
 
 // setting up test data
@@ -58,16 +60,28 @@ beforeAll(async () => {
 
 
 	// add initial data
-	const user = new User({ username: 'root', name: 'Test user', password: 'sekret' })
+	const saltRounds = 10
+	const passwordHash = await bcrypt.hash('sekret', saltRounds)
+	const user = new User({
+		username: 'root',
+		name: 'Test user',
+		passwordHash
+	})
+
+
 	await user.save()
 	initialUserID = user.id
 	// it seems that it works with the API, but test is broken
 	// so, even though it is a bit stupid, I'll refactor the code so
 	// the we use API...
+
+	// and we have to sign in...
+	rootToken = await signIn({'username':'root', 'password': 'sekret'})
 	for (let i = 0; i < initialBlogs.length; i++) {
 		const newBlog = await api
 		.post('/api/blogs')
 		.set('data-type', 'application/json')
+		.set('Authorization', rootToken)
 		.send(initialBlogs[i])
 	}
 
@@ -116,11 +130,29 @@ describe('blog API tests', () => {
 
 	describe('post part of API', () => {
 
+		test('before auth nothing can be added (no token)', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.send(addedBlog)
+			.expect(401)
+		})
+		test('before auth nothing can be added (bogus token)', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.set('Authorization', 'application/json')
+			.send(addedBlog)
+			.expect(401)
+		})
+
+
 		test('valid new object can be added', async () => {
 			addedBlog.user = initialUserID
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(addedBlog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -140,6 +172,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 
 			const response = await api
@@ -153,6 +186,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(	{"author": "Graham Chapman"})
 			.expect(400)
 		})
@@ -160,6 +194,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(	{"": "Graham Chapman"})
 			.expect(400)
 		})
@@ -199,6 +234,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.post('/api/blogs')
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -311,6 +347,22 @@ const usersInDb = async() => {
 	catch (e) {
 		console.log(e)
 	}
+}
+
+const signIn = async(user) => {
+	try {
+		const result = await api
+		.post('/api/login')
+		.set('data-type', 'application/json')
+		.send(user)
+		const resultText = 'bearer ' + result.body.token
+		return resultText
+	}
+	catch (err) {
+		console.log(err)
+	}
+
+
 }
 
 const initiateConnection = () => {

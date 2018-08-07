@@ -4,6 +4,8 @@ const blogsRouter = require('express').Router()
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const utils = require('../utils/utils')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({})
@@ -31,18 +33,14 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.post('/', async(request, response) => {
   try {
-
+    validCall = utils.isValidCall(request)
+    if (validCall.statuscode !== 200) {
+      response.status(validCall.statuscode).json(validCall.status)
+      return
+    }
     // for 4.17, get the first user
-    let userId = undefined
-    const users = await User.find({})
-    if (users === undefined || users.length == 0) {
-      // array empty or does not exist
-      console.log('no users')
-    }
-    else {
-      userId = users[0]
-      request.body.user = userId.id
-    }
+    // for later periods
+    request.body.user = validCall.id
 
     const blog = new Blog(request.body)
     if (typeof blog.likes == 'undefined') {
@@ -50,15 +48,15 @@ blogsRouter.post('/', async(request, response) => {
     }
     if (!blog.url || !blog.title) {
       response.status(400).json('INCOMPLETE DATA')
+      return
     }
     else {
       const savedBlog = await blog.save()
+      const userId = await User.findById(validCall.id)
       userId.blogs = userId.blogs.concat(savedBlog.id)
       await userId.save()
       response.status(201).json('CREATED')
     }
-
-
   }
   catch (err) {
     console.log(err);
@@ -98,6 +96,5 @@ const validateBlog = (blog) => {
   }
   return true
 }
-
 
 module.exports = blogsRouter
