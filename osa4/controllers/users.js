@@ -4,8 +4,17 @@ const User = require('../models/user')
 const config = require('../utils/config')
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  response.json(User.map(formatUser))
+  try {
+    const users = await User.find({})
+    .populate('blogs')
+    response.json(users.map(user => User.format(user)))
+  }
+  catch (err) {
+    console.log(err)
+    response.status(400).json({ error: 'server error' })
+    return
+  }
+
 })
 
 usersRouter.post('/', async (request, response) => {
