@@ -49,6 +49,12 @@ const addedBlog =
 			password: 'salainen'
 		}
 
+		const wrongUser = {
+			username: 'salainen',
+			name: 'Jukka Luukkainen',
+			password: 'wererewr'
+		}
+
 
 beforeAll(async () => {
 	// empty database
@@ -202,24 +208,55 @@ describe('blog API tests', () => {
 	})
 
 	describe('delete part of API', () => {
-		test('deleting addedBlog', async () => {
-
+		describe('deleting addedBlog', () => {
+			let url = undefined
 			// get some ID
-			let response = await api
-				.get('/api/blogs')
+			test('get initial data', async() => {
+				let response = await api
+					.get('/api/blogs')
 
-			const content = response.body.find(r => r.title === 'This is an ex-parrot')
-			idToBeDeleted = content._id
-			const url = '/api/blogs/' + content._id
+				const content = response.body.find(r => r.title === 'This is an ex-parrot')
+				idToBeDeleted = content._id
+				url = '/api/blogs/' + content._id
+				expect(idToBeDeleted).not.toBeUndefined()
+			})
 
 			//first we test that it returns now something
-			response = await api
-				.get('/api/blogs/' + idToBeDeleted)
-					.expect(200)
+			test('first we test that it returns now something', async () => {
+				response = await api
+					.get('/api/blogs/' + idToBeDeleted)
+						.expect(200)
+			})
 
-			response = await api
-				.delete('/api/blogs/' + idToBeDeleted)
-					.expect(200)
+			// then we try to delete it with wrong guy
+			test('then we try to delete it with wrong guy', async () => {
+				await api
+					.post('/api/users')
+					.send(wrongUser)
+				const wronToken = await signIn(wrongUser)
+				console.log('wronToken', wronToken);
+				for (let i = 0; i < 10; i++) {
+					console.log(i);
+				}
+				response = await api
+					.delete('/api/blogs/' + idToBeDeleted)
+					.set('Authorization', wronToken)
+						.expect(401)
+			})
+
+			// then we actually delete it
+			test('then we actually delete it', async () => {
+				response = await api
+					.delete('/api/blogs/' + idToBeDeleted)
+					.set('Authorization', rootToken)
+						.expect(200)
+			})
+			test('testing that addedBlog cant be found again', async () => {
+				response = await api
+					.get('/api/blogs/' + idToBeDeleted)
+						.expect(404)
+			})
+
 
 		})
 		test('testing that addedBlog cant be found again', async () => {
@@ -317,7 +354,7 @@ describe('user part of API', () => {
 	test('POST /api/users succeeds with a fresh username', async () => {
 		const usersBeforeOperation = await usersInDb()
 
-		newUser.password = 'salasana'
+		newUser.password = 'salainen'
 		await api
 			.post('/api/users')
 			.send(newUser)
@@ -351,10 +388,15 @@ const usersInDb = async() => {
 
 const signIn = async(user) => {
 	try {
+		console.log('user', user);
 		const result = await api
 		.post('/api/login')
 		.set('data-type', 'application/json')
 		.send(user)
+		console.log('result', result.body);
+		for (let i = 0; i < 10; i++) {
+			console.log(i);
+		}
 		const resultText = 'bearer ' + result.body.token
 		return resultText
 	}

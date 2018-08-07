@@ -18,7 +18,6 @@ const getTokenFrom = (request) => {
 const isValidCall = (request) => {
   try {
      const body = request.body
-     console.log('request body in utils', request.body)
      const token = getTokenFrom(request)
      let decodedToken = undefined
      if (token) {

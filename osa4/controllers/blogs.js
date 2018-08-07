@@ -26,9 +26,28 @@ blogsRouter.get('/:id', async (request, response) => {
 
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog
-	    .findByIdAndRemove(request.params.id)
-    response.status(200).json("OK")
+  try {
+    validCall = utils.isValidCall(request)
+    if (validCall.statuscode !== 200) {
+      response.status(validCall.statuscode).json(validCall.status)
+      return
+    }
+    const blog = await Blog.findById(request.params.id)
+    if (blog.user.toString() === validCall.id) {
+      await blog.remove()
+      response.status(200).json("OK")
+    }
+    else {
+      response.status(401).json("not ok to delete other's blogs")
+    }
+
+
+  }
+  catch (e) {
+    console.log(e)
+    response.status(500).json('vituiks män')
+  }
+
 })
 
 blogsRouter.post('/', async(request, response) => {
