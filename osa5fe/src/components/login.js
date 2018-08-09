@@ -22,6 +22,7 @@ login = async(event) => {
   console.log('logging in with', this.state.username, this.state.password)
   const user = {'username': this.state.username, 'password': this.state.password}
   const result = await loginService.login(user)
+  result.password =  this.state.password
   this.loginHandle(result)
 }
 

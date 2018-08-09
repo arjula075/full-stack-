@@ -3,15 +3,19 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginComponent from './components/login'
 import UserComponent from './components/user'
+import loginService from './services/login'
+const utils = require('./utils/utils.js')
 
 class App extends React.Component {
   constructor(props) {
     super(props)
+    const cachedUser = utils.getUserFromMemory()
+    console.log('cachedUser', cachedUser);
     this.state = {
         blogs: [],
         username: '',
         password: '',
-        user: null,
+        user: cachedUser,
         hideWhenLoggedIn: {
           display: ''
         },
@@ -19,17 +23,23 @@ class App extends React.Component {
           display: 'none'
         },
         token: null
-
       }
     this.handleLoginResult = this.handleLoginResult.bind(this)
 
   }
 
   componentDidMount = async() => {
+
     if (this.state.user) {
+      const test = await this.loginFromCache(this.state.user)
       const blogs = await blogService.getAll(this.state.token)
       this.setState({ blogs })
     }
+  }
+
+  loginFromCache = async(cachedUser) => {
+    const result = await loginService.login(cachedUser)
+    this.handleLoginResult(result)
   }
 
   handleLoginResult = async(result) => {
@@ -38,13 +48,16 @@ class App extends React.Component {
     if (result.token) {
       loggedInUser = {
         name: result.name,
-        username: result.username
+        username: result.username,
+        password: result.password
       }
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(loggedInUser))
     }
     else {
       return
     }
     console.log(loggedInUser)
+
     const blogs = await blogService.getAll(result.token)
 
     const pivotDisplay = this.state.hideWhenLoggedIn
@@ -77,5 +90,9 @@ class App extends React.Component {
     );
   }
 }
+
+
+
+
 
 export default App;
