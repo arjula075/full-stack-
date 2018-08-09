@@ -8,6 +8,11 @@ const utils = require('../utils/utils')
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
+    validCall = utils.isValidCall(request)
+    if (validCall.statuscode !== 200) {
+      response.status(validCall.statuscode).json(validCall.status)
+      return
+    }
     const blogs = await Blog.find({})
     .populate('user')
     response.json(blogs)

@@ -20,10 +20,6 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   try {
     const body = request.body
-    console.log('body', body)
-    console.log('password', body.password)
-    console.log('password', typeof body.password)
-
     if (!body.password) {
       console.log('no password', body.password)
       response.status(400).json({ error: 'no password' })

@@ -5,6 +5,7 @@ const getTokenFrom = (request) => {
 
   try {
     const authorization = request.get('Authorization')
+    console.log('authorization', authorization)
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       return authorization.substring(7)
     }
@@ -18,6 +19,7 @@ const getTokenFrom = (request) => {
 const isValidCall = (request) => {
   try {
      const body = request.body
+
      const token = getTokenFrom(request)
      let decodedToken = undefined
      if (token) {
