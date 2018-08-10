@@ -1,6 +1,8 @@
 import React from 'react'
 const Blog = (props) => {
-  console.log(props)
+
+  console.log('props in blog', props)
+
   if (props.blogs) {
     return (
       props.blogs.map(blog => {

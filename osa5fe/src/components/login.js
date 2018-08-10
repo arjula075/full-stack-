@@ -8,7 +8,7 @@ constructor(props) {
   this.state = {
     username: props.user.username,
     password: props.user.password,
-
+    fetchedPassword: props.user.password,
   }
   this.loginHandle = props.loginHandle
 }
@@ -19,10 +19,12 @@ handleLoginFieldChange = (event) => {
 
 login = async(event) => {
   event.preventDefault()
-  console.log('logging in with', this.state.username, this.state.password)
-  const user = {'username': this.state.username, 'password': this.state.password}
+  const psw = this.state.password ? this.state.password : this.state.fetchedPassword
+  console.log('logging in with', this.state.username, psw)
+  const user = {'username': this.state.username, 'password': psw}
   const result = await loginService.login(user)
-  result.password =  this.state.password
+  console.log('setting password', psw);
+  result.password =  psw
   this.loginHandle(result)
 }
 

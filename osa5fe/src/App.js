@@ -1,3 +1,5 @@
+// No, 5.5 tulikin tehtyä heti kärkeen
+
 import React from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -17,14 +19,11 @@ class App extends React.Component {
         username: '',
         password: '',
         user: cachedUser,
-        hideWhenLoggedIn: {
-          display: ''
-        },
-        showWhenLoggedIn: {
-          display: 'none'
-        },
+        hideWhenLoggedIn: utils.displayNormal(),
+        showWhenLoggedIn: utils.displayNone(),
         token: null,
-        counter: 0
+        counter: 0,
+        fetchedPassword: cachedUser ? cachedUser.password : null,
       }
     this.handleLoginResult = this.handleLoginResult.bind(this)
     this.sendBlog = this.sendBlog.bind(this)
@@ -89,7 +88,8 @@ class App extends React.Component {
         username: result.username,
         password: result.password
       }
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(loggedInUser))
+      utils.setUserToMemory(loggedInUser)
+
     }
     else {
       return
@@ -98,11 +98,9 @@ class App extends React.Component {
 
     const blogs = await blogService.getAll(result.token)
 
-    const pivotDisplay = this.state.hideWhenLoggedIn
-
     this.setState({
-        hideWhenLoggedIn: this.state.showWhenLoggedIn,
-        showWhenLoggedIn: pivotDisplay,
+        hideWhenLoggedIn: utils.displayNone(),
+        showWhenLoggedIn: utils.displayNormal(),
         user: loggedInUser,
         username: '',
         password: '',
@@ -138,6 +136,7 @@ class App extends React.Component {
   render() {
     let user = {'username': this.state.username, 'password': this.state.password}
     console.log('user in render',this.state.user)
+    console.log('state in render',this.state)
     return (
     <div>
       <Notification message={this.state.successtext} error={this.state.errortext} />
