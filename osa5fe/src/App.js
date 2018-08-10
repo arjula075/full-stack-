@@ -28,6 +28,8 @@ class App extends React.Component {
       }
     this.handleLoginResult = this.handleLoginResult.bind(this)
     this.sendBlog = this.sendBlog.bind(this)
+    this.setNotification = this.setNotification.bind(this)
+    this.clearmessages = this.clearmessages.bind(this)
 
   }
 
@@ -41,6 +43,14 @@ class App extends React.Component {
   }
 
   loginFromCache = async(cachedUser) => {
+    try {
+      const result = await loginService.login(cachedUser)
+      this.handleLoginResult(result)
+      this.setNotification('kirjautuminen onnistui')
+    }
+    catch(e) {
+      this.setNotification('NA', 'kirjautuminen epäonnistui')
+    }
     const result = await loginService.login(cachedUser)
     this.handleLoginResult(result)
   }
@@ -52,10 +62,23 @@ class App extends React.Component {
   sendBlog = async(blog) => {
     console.log('in sendBlog', this.state.token);
     const result = await blogService.createBlog(blog, this.state.token)
-    const newBlogs = await blogService.getAll(this.state.token)
-    this.setState({blogs: newBlogs})
-
+    try {
+      const newBlogs = await blogService.getAll(this.state.token)
+      this.setState({blogs: newBlogs})
+      this.setNotification('Good job')
+    }
+    catch (e) {
+      console.log(e)
+      this.setNotification('NA', 'failed')
+    }
   }
+
+  clearmessages() {
+  this.setState({
+    successtext: null,
+    errortext: null
+  })
+}
 
   handleLoginResult = async(result) => {
     console.log('result in App', result)
@@ -85,8 +108,31 @@ class App extends React.Component {
         password: '',
         token: 'bearer ' + result.token,
         blogs: blogs,
-        counter: this.state.counter + 1
+        counter: this.state.counter + 1,
       })
+
+  }
+
+  setNotification = (notification, error) => {
+    console.log('in notification', notification)
+    if (!error) {
+    this.setState({
+  					successtext: notification
+  				})
+
+  				setTimeout(() => {
+  					this.clearmessages()
+  				}, 3000)
+  	}
+  	else {
+  				console.log(error)
+  				this.setState({
+  					errortext: error
+  				})
+  				setTimeout(() => {
+  					this.clearmessages()
+  				}, 3000)
+  		}
   }
 
   render() {
@@ -94,6 +140,7 @@ class App extends React.Component {
     console.log('user in render',this.state.user)
     return (
     <div>
+      <Notification message={this.state.successtext} error={this.state.errortext} />
       <div style={this.state.hideWhenLoggedIn}>
         <LoginComponent user={user} loginHandle = {this.handleLoginResult}/>
       </div >
@@ -112,8 +159,25 @@ class App extends React.Component {
   }
 }
 
-
-
-
+const Notification = ({ message, error }) => {
+	console.log(message, error)
+  if (message === null && error === null) {
+    return null
+  }
+  else if (message === null) {
+	  return (
+		<div className="error">
+		  {error}
+		</div>
+	  )
+  }
+  else {
+	return (
+		<div className="note">
+		  {message}
+		</div>
+	  )
+  }
+}
 
 export default App;
