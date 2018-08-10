@@ -7,7 +7,8 @@ const getTokenFrom = (request) => {
     const authorization = request.get('Authorization')
     console.log('authorization', authorization)
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-      return authorization.substring(7)
+      console.log('index to subst', authorization.lastIndexOf('bearer ') + 7)
+      return authorization.substring(authorization.lastIndexOf('bearer ') + 7)
     }
     return null
   }

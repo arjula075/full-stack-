@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginComponent from './components/login'
 import UserComponent from './components/user'
+import NewBlogComponent from './components/newBlogs'
 import loginService from './services/login'
 const utils = require('./utils/utils.js')
 
@@ -22,9 +23,11 @@ class App extends React.Component {
         showWhenLoggedIn: {
           display: 'none'
         },
-        token: null
+        token: null,
+        counter: 0
       }
     this.handleLoginResult = this.handleLoginResult.bind(this)
+    this.sendBlog = this.sendBlog.bind(this)
 
   }
 
@@ -40,6 +43,18 @@ class App extends React.Component {
   loginFromCache = async(cachedUser) => {
     const result = await loginService.login(cachedUser)
     this.handleLoginResult(result)
+  }
+
+  successFullPost = async() => {
+    const blogs = await blogService.getAll(this.state.token)
+  }
+
+  sendBlog = async(blog) => {
+    console.log('in sendBlog', this.state.token);
+    const result = await blogService.createBlog(blog, this.state.token)
+    const newBlogs = await blogService.getAll(this.state.token)
+    this.setState({blogs: newBlogs})
+
   }
 
   handleLoginResult = async(result) => {
@@ -69,7 +84,8 @@ class App extends React.Component {
         username: '',
         password: '',
         token: 'bearer ' + result.token,
-        blogs: blogs
+        blogs: blogs,
+        counter: this.state.counter + 1
       })
   }
 
@@ -84,8 +100,13 @@ class App extends React.Component {
       <div  style={this.state.showWhenLoggedIn}>
         <UserComponent user={this.state.user} />
       </div>
-      <h2>blogs</h2>
-          <Blog blogs={this.state.blogs} />
+      <div>
+        <h2>blogs</h2>
+            <Blog blogs={this.state.blogs} />
+      </div>
+      <div style={this.state.showWhenLoggedIn}>
+        <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
+      </div>
     </div>
     );
   }
