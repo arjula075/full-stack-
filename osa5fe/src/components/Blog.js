@@ -19,18 +19,22 @@ const Blog = (props) =>  {
     }
   }
 
+  const toggleVisibility = (props1) => {
+    console.log('toggleVisibility func', props)
+    props.toggleVisibility(props1.blog._id)
+  }
+
   if (blogs) {
     console.log(blogs)
     return (
       blogs.map(blog => {
 
         return (<div key={blog._id} style={blogStyle()}>
-          {blog.title} {blog.author}
-          <Togglable blog={blog} toggleVisibility={props.toggleVisibility} buttonLabel ={label} >
-            <p>{blog.author}</p>
-            <p>{blog.title}</p>
-            <p>{blog.url}</p>
-            <p>{blog.likes}</p>
+          <Togglable blog={blog} toggleVisibility={props.toggleVisibility} buttonLabel ={blog.title} >
+              <p>{blog.author}</p>
+              <p>{blog.title}</p>
+              <p>{blog.url}</p>
+              <p>{blog.likes}</p>
           </Togglable>
         </div>
         )

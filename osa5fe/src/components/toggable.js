@@ -2,6 +2,16 @@ import React from 'react'
 
 const Togglable = (props) =>  {
 
+  const blogStyle = () => {
+    return {
+      paddingTop: 10,
+      paddingLeft: 2,
+      border: 'solid',
+      borderWidth: 1,
+      marginBottom: 5
+    }
+  }
+
   console.log('props on toggable', props.blog.visibility)
 
     const hideWhenVisible = { display: props.blog.visibility ? 'none' : '' }
@@ -13,16 +23,19 @@ const Togglable = (props) =>  {
     }
 
     return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+      <div >
+        <div>
+          <span onClick={toggleVisibility}>{props.blog.title} {props.blog.author}</span>
         </div>
         <div style={showWhenVisible}>
-          {props.children}
-          <button onClick={toggleVisibility}>cancel</button>
+          <div style={blogStyle()}>
+            {props.children}
+            <button onClick={toggleVisibility}>cancel</button>
+          </div>
         </div>
       </div>
     )
   }
 
 export default Togglable
+//<button onClick={toggleVisibility}>{props.buttonLabel}</button>
