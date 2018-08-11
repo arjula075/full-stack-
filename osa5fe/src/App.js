@@ -13,7 +13,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     const cachedUser = utils.getUserFromMemory()
-    console.log('cachedUser', cachedUser);
     this.state = {
         blogs: [],
         username: '',
@@ -29,14 +28,32 @@ class App extends React.Component {
     this.sendBlog = this.sendBlog.bind(this)
     this.setNotification = this.setNotification.bind(this)
     this.clearmessages = this.clearmessages.bind(this)
+    this.successFullPost = this.successFullPost.bind(this)
+    this.loginFromCache = this.loginFromCache.bind(this)
+    this.toggleVisibility = this.toggleVisibility.bind(this)
+  }
+
+  toggleVisibility = (id) => {
+    console.log('id is vis', id)
+    const pivotBlogs = this.state.blogs
+    const index = pivotBlogs.findIndex(blog => blog._id == id)
+    if (index > -1) {
+      pivotBlogs[index].visibility =  !pivotBlogs[index].visibility
+    }
+    this.setState({
+      blogs: pivotBlogs
+    })
+
 
   }
 
   componentDidMount = async() => {
-
     if (this.state.user) {
-      const test = await this.loginFromCache(this.state.user)
-      const blogs = await blogService.getAll(this.state.token)
+      await this.loginFromCache(this.state.user)
+      const  blogs = await blogService.getAll(this.state.token)
+      for (let i = 0; i < blogs.length; i++) {
+        blogs[i].visibility = false
+      }
       this.setState({ blogs })
     }
   }
@@ -55,14 +72,20 @@ class App extends React.Component {
   }
 
   successFullPost = async() => {
-    const blogs = await blogService.getAll(this.state.token)
+    let blogs = await blogService.getAll(this.state.token)
+    for (let i = 0; i < blogs.length; i++) {
+      blogs[i].visibility = false
+    }
+    this.setState({ blogs })
   }
 
   sendBlog = async(blog) => {
-    console.log('in sendBlog', this.state.token);
     const result = await blogService.createBlog(blog, this.state.token)
     try {
-      const newBlogs = await blogService.getAll(this.state.token)
+      let newBlogs = await blogService.getAll(this.state.token)
+      for (let i = 0; i < newBlogs.length; i++) {
+        newBlogs[i].visibility = false
+      }
       this.setState({blogs: newBlogs})
       this.setNotification('Good job')
     }
@@ -80,7 +103,6 @@ class App extends React.Component {
 }
 
   handleLoginResult = async(result) => {
-    console.log('result in App', result)
     let loggedInUser = null
     if (result.token) {
       loggedInUser = {
@@ -94,9 +116,12 @@ class App extends React.Component {
     else {
       return
     }
-    console.log(loggedInUser)
 
-    const blogs = await blogService.getAll(result.token)
+    let blogs = await blogService.getAll(result.token)
+    for (let i = 0; i < blogs.length; i++) {
+      blogs[i].visibility = false
+    }
+    console.log('blogs', blogs);
 
     this.setState({
         hideWhenLoggedIn: utils.displayNone(),
@@ -112,7 +137,6 @@ class App extends React.Component {
   }
 
   setNotification = (notification, error) => {
-    console.log('in notification', notification)
     if (!error) {
     this.setState({
   					successtext: notification
@@ -135,8 +159,6 @@ class App extends React.Component {
 
   render() {
     let user = {'username': this.state.username, 'password': this.state.password}
-    console.log('user in render',this.state.user)
-    console.log('state in render',this.state)
     return (
     <div>
       <Notification message={this.state.successtext} error={this.state.errortext} />
@@ -148,7 +170,7 @@ class App extends React.Component {
       </div>
       <div>
         <h2>blogs</h2>
-            <Blog blogs={this.state.blogs} />
+            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} />
       </div>
       <div style={this.state.showWhenLoggedIn}>
         <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
@@ -159,7 +181,6 @@ class App extends React.Component {
 }
 
 const Notification = ({ message, error }) => {
-	console.log(message, error)
   if (message === null && error === null) {
     return null
   }

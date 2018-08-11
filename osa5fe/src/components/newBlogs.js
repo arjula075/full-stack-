@@ -1,5 +1,4 @@
 import React from 'react'
-import blogService from '../services/blogs'
 
 class NewBlogComponent extends React.Component {
 

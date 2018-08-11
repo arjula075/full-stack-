@@ -1,13 +1,37 @@
 import React from 'react'
-const Blog = (props) => {
+import Togglable from '../components/toggable'
 
-  console.log('props in blog', props)
+const Blog = (props) =>  {
 
-  if (props.blogs) {
+    console.log('props in blog const', props);
+
+    const blogs = props.blogs
+
+    const label = 'Näytä tiedot'
+
+  const blogStyle = () => {
+    return {
+      paddingTop: 10,
+      paddingLeft: 2,
+      border: 'solid',
+      borderWidth: 1,
+      marginBottom: 5
+    }
+  }
+
+  if (blogs) {
+    console.log(blogs)
     return (
-      props.blogs.map(blog => {
-        return (<div key={blog._id}>
+      blogs.map(blog => {
+
+        return (<div key={blog._id} style={blogStyle()}>
           {blog.title} {blog.author}
+          <Togglable blog={blog} toggleVisibility={props.toggleVisibility} buttonLabel ={label} >
+            <p>{blog.author}</p>
+            <p>{blog.title}</p>
+            <p>{blog.url}</p>
+            <p>{blog.likes}</p>
+          </Togglable>
         </div>
         )
         })
@@ -18,6 +42,6 @@ const Blog = (props) => {
         <div></div>
         )
       }
-}
+    }
 
 export default Blog
