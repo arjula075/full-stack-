@@ -21,6 +21,17 @@ const createBlog = async(blog, token) => {
   return request.then(response => response.data)
 }
 
+const updateBlog = async(blog, token) => {
+  console.log('token',token)
+  const authString = makeAuthString(token)
+  const head =  {'headers' :{'Authorization': authString}}
+  console.log('head',head)
+
+  const request = axios.put(baseUrl + '/' + blog._id, blog, head)
+  return request.then(response => response.data)
+}
+
+
 const makeAuthString = (token) => {
   let authString = token
   if (token && !token.toLowerCase().startsWith('bearer ')) {
@@ -33,4 +44,5 @@ const makeAuthString = (token) => {
 export default {
   getAll,
   createBlog,
+  updateBlog,
 }

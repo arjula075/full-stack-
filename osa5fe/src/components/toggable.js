@@ -22,6 +22,11 @@ const Togglable = (props) =>  {
       props.toggleVisibility(props.blog._id)
     }
 
+    const likePressed = (props1) => {
+      console.log('likePressed toogable', props)
+      props.likePressed(props.blog)
+    }
+
     return (
       <div >
         <div>
@@ -30,6 +35,7 @@ const Togglable = (props) =>  {
         <div style={showWhenVisible}>
           <div style={blogStyle()}>
             {props.children}
+            <button onClick={likePressed}>like</button>
             <button onClick={toggleVisibility}>cancel</button>
           </div>
         </div>

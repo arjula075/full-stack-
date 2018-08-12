@@ -31,6 +31,7 @@ class App extends React.Component {
     this.successFullPost = this.successFullPost.bind(this)
     this.loginFromCache = this.loginFromCache.bind(this)
     this.toggleVisibility = this.toggleVisibility.bind(this)
+    this.likePressed = this.likePressed.bind(this)
   }
 
   toggleVisibility = (id) => {
@@ -43,7 +44,16 @@ class App extends React.Component {
     this.setState({
       blogs: pivotBlogs
     })
+  }
 
+  likePressed = async(blog) => {
+    console.log('like pressed', blog)
+    blog.visibility = undefined
+    blog.likes = blog.likes + 1
+    await blogService.updateBlog(blog, this.state.token)
+    await this.successFullPost()
+    this.toggleVisibility(blog._id)
+    this.setNotification('Yeah, new like')
 
   }
 
@@ -170,7 +180,7 @@ class App extends React.Component {
       </div>
       <div>
         <h2>blogs</h2>
-            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} />
+            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} />
       </div>
       <div style={this.state.showWhenLoggedIn}>
         <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
