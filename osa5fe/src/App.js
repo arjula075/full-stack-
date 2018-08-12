@@ -61,6 +61,7 @@ class App extends React.Component {
     if (this.state.user) {
       await this.loginFromCache(this.state.user)
       const  blogs = await blogService.getAll(this.state.token)
+      blogs.sort((a, b) => b.likes - a.likes)
       for (let i = 0; i < blogs.length; i++) {
         blogs[i].visibility = false
       }
@@ -83,6 +84,7 @@ class App extends React.Component {
 
   successFullPost = async() => {
     let blogs = await blogService.getAll(this.state.token)
+    blogs.sort((a, b) => b.likes - a.likes)
     for (let i = 0; i < blogs.length; i++) {
       blogs[i].visibility = false
     }
@@ -93,6 +95,7 @@ class App extends React.Component {
     const result = await blogService.createBlog(blog, this.state.token)
     try {
       let newBlogs = await blogService.getAll(this.state.token)
+      newBlogs.sort((a, b) => b.likes - a.likes)
       for (let i = 0; i < newBlogs.length; i++) {
         newBlogs[i].visibility = false
       }
@@ -128,6 +131,7 @@ class App extends React.Component {
     }
 
     let blogs = await blogService.getAll(result.token)
+    blogs.sort((a, b) => b.likes - a.likes)
     for (let i = 0; i < blogs.length; i++) {
       blogs[i].visibility = false
     }
