@@ -23,4 +23,30 @@ describe.only('<SimpleBlog />', () => {
     expect(blogDiv.text()).toContain(blog.author)
     expect(likeDiv.text()).toContain(blog.likes)
   })
+  test('presses button', () => {
+    const blog =	{
+        "title": "Ari's first blog",
+        "author": "Ari Lahti",
+        "url": "https://jotain.jossain",
+        "likes": 2
+      }
+
+    const mockHandler = jest.fn()
+
+    let counter = 0
+    const onClick = () => {
+      console.log('OnClick test func')
+      counter = counter + 1
+    }
+
+    const blogComponent = shallow(<SimpleBlog blog={blog} onClick={onClick}/>)
+    const button = blogComponent.find('button')
+    const iter = 2
+    for (let i = 0; i < iter; i++) {
+      button.simulate('click')
+    }
+
+
+    expect(counter).toBe(iter)
+  })
 })
