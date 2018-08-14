@@ -1,5 +1,7 @@
 import React from 'react'
 import Togglable from '../components/toggable'
+import SimpleBlog from '../components/simpleBlog'
+
 
 const Blog = (props) =>  {
 
@@ -19,6 +21,10 @@ const Blog = (props) =>  {
     }
   }
 
+  const onClick = () => {
+    console.log('onClick')
+  }
+
   const toggleVisibility = (props1) => {
     console.log('toggleVisibility func', props)
     props.toggleVisibility(props1.blog._id)
@@ -35,6 +41,7 @@ const Blog = (props) =>  {
               <p>{blog.title}</p>
               <p>{blog.url}</p>
               <p>{blog.likes}</p>
+              <SimpleBlog blog={blog} onClick={onClick}/>
           </Togglable>
         </div>
         )
