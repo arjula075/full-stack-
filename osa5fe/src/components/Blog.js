@@ -30,7 +30,7 @@ const Blog = (props) =>  {
       blogs.map(blog => {
 
         return (<div key={blog._id} style={blogStyle()}>
-          <Togglable blog={blog} toggleVisibility={props.toggleVisibility} likePressed={props.likePressed} buttonLabel ={blog.title} >
+          <Togglable blog={blog} toggleVisibility={props.toggleVisibility} likePressed={props.likePressed} buttonLabel ={blog.title} user = {props.user} deleteBlog  = {props.deleteBlog}>
               <p>{blog.author}</p>
               <p>{blog.title}</p>
               <p>{blog.url}</p>

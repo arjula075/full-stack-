@@ -21,6 +21,17 @@ const createBlog = async(blog, token) => {
   return request.then(response => response.data)
 }
 
+const deleteBlog = async(blog, token) => {
+  console.log('token',token)
+  const authString = makeAuthString(token)
+  const head =  {'headers' :{'Authorization': authString}}
+  console.log('head',head)
+  const url = baseUrl + '/' + blog._id
+
+  const request = axios.delete(url, head)
+  return request.then(response => response.data)
+}
+
 const updateBlog = async(blog, token) => {
   console.log('token',token)
   const authString = makeAuthString(token)
@@ -45,4 +56,5 @@ export default {
   getAll,
   createBlog,
   updateBlog,
+  deleteBlog,
 }

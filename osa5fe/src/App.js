@@ -32,6 +32,8 @@ class App extends React.Component {
     this.loginFromCache = this.loginFromCache.bind(this)
     this.toggleVisibility = this.toggleVisibility.bind(this)
     this.likePressed = this.likePressed.bind(this)
+    this.deleteBlog = this.deleteBlog.bind(this)
+
   }
 
   toggleVisibility = (id) => {
@@ -54,6 +56,13 @@ class App extends React.Component {
     await this.successFullPost()
     this.toggleVisibility(blog._id)
     this.setNotification('Yeah, new like')
+  }
+
+  deleteBlog = async(blog) => {
+    console.log('delete blog in app', blog)
+    await blogService.deleteBlog(blog, this.state.token)
+    this.setNotification('blog ' + blog.title + ' was deleted')
+    this.successFullPost()
 
   }
 
@@ -184,7 +193,7 @@ class App extends React.Component {
       </div>
       <div>
         <h2>blogs</h2>
-            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} />
+            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} user = {this.state.user.username} deleteBlog  = {this.deleteBlog}/>
       </div>
       <div style={this.state.showWhenLoggedIn}>
         <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>

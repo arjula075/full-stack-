@@ -16,6 +16,7 @@ const Togglable = (props) =>  {
 
     const hideWhenVisible = { display: props.blog.visibility ? 'none' : '' }
     const showWhenVisible = { display: props.blog.visibility ? '' : 'none' }
+    const showOwn = {display:  props.blog.user.username == props.user ? '' : 'none'}
 
     const toggleVisibility = (props1) => {
       console.log('toggleVisibility func', props)
@@ -23,8 +24,16 @@ const Togglable = (props) =>  {
     }
 
     const likePressed = (props1) => {
-      console.log('likePressed toogable', props)
+      console.log('likePressed toggable', props)
       props.likePressed(props.blog)
+    }
+
+    const deleteBlog = (props1) => {
+      console.log('deleteBlog toggable', props, props1)
+      if (window.confirm('Do you really want to delete ' + props.blog.title +'?')) { 
+          props.deleteBlog(props.blog)
+      }
+
     }
 
     return (
@@ -36,7 +45,9 @@ const Togglable = (props) =>  {
           <div style={blogStyle()}>
             {props.children}
             <button onClick={likePressed}>like</button>
+            <button  style={showOwn} onClick={deleteBlog}>delete</button>
             <button onClick={toggleVisibility}>cancel</button>
+
           </div>
         </div>
       </div>
