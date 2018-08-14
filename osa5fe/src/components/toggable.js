@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = (props) =>  {
 
@@ -30,7 +31,7 @@ const Togglable = (props) =>  {
 
     const deleteBlog = (props1) => {
       console.log('deleteBlog toggable', props, props1)
-      if (window.confirm('Do you really want to delete ' + props.blog.title +'?')) { 
+      if (window.confirm('Do you really want to delete ' + props.blog.title +'?')) {
           props.deleteBlog(props.blog)
       }
 
@@ -52,6 +53,15 @@ const Togglable = (props) =>  {
         </div>
       </div>
     )
+  }
+
+  // toggleVisibility={props.toggleVisibility} likePressed={props.likePressed} buttonLabel ={blog.title} user = {props.user} deleteBlog  = {props.deleteBlog}
+  Togglable.propTypes = {
+    toggleVisibility : PropTypes.func.isRequired,
+    likePressed : PropTypes.func.isRequired,
+    buttonLabel : PropTypes.string.isRequired,
+    user : PropTypes.string.isRequired,
+    deleteBlog : PropTypes.func.isRequired,
   }
 
 export default Togglable
