@@ -3,7 +3,6 @@ const utils = require('../utils/utils.js')
 
 const UserComponent = (props) => {
 
-    console.log('props', props)
     let loggedInUser = {}
     if (props.user) {
         loggedInUser = props.user

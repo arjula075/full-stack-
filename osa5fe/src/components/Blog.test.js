@@ -1,6 +1,13 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+import App from '../App'
 import SimpleBlog from './simpleBlog'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
+import Blog from '../components/Blog'
+import LoginComponent from '../components/login'
+import NewBlogComponent from '../components/newBlogs'
+const utils = require('../utils/utils.js')
 
 describe.only('<SimpleBlog />', () => {
   test('renders content', () => {
@@ -49,4 +56,13 @@ describe.only('<SimpleBlog />', () => {
 
     expect(counter).toBe(iter)
   })
+})
+
+describe.only('<App />', async() => {
+  // yae, found a bug with tests!
+
+  let app = mount(<App />)
+  app.update()
+  console.log('app, after update', app.debug());
+
 })

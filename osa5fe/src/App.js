@@ -11,28 +11,33 @@ const utils = require('./utils/utils.js')
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
-    const cachedUser = utils.getUserFromMemory()
-    this.state = {
-        blogs: [],
-        username: '',
-        password: '',
-        user: cachedUser,
-        hideWhenLoggedIn: utils.displayNormal(),
-        showWhenLoggedIn: utils.displayNone(),
-        token: null,
-        counter: 0,
-        fetchedPassword: cachedUser ? cachedUser.password : null,
-      }
-    this.handleLoginResult = this.handleLoginResult.bind(this)
-    this.sendBlog = this.sendBlog.bind(this)
-    this.setNotification = this.setNotification.bind(this)
-    this.clearmessages = this.clearmessages.bind(this)
-    this.successFullPost = this.successFullPost.bind(this)
-    this.loginFromCache = this.loginFromCache.bind(this)
-    this.toggleVisibility = this.toggleVisibility.bind(this)
-    this.likePressed = this.likePressed.bind(this)
-    this.deleteBlog = this.deleteBlog.bind(this)
+    try {
+      super(props)
+      const cachedUser = utils.getUserFromMemory()
+      this.state = {
+          blogs: [],
+          username: '',
+          password: '',
+          user: cachedUser,
+          hideWhenLoggedIn: utils.displayNormal(),
+          showWhenLoggedIn: utils.displayNone(),
+          token: null,
+          counter: 0,
+          fetchedPassword: cachedUser ? cachedUser.password : null,
+        }
+      this.handleLoginResult = this.handleLoginResult.bind(this)
+      this.sendBlog = this.sendBlog.bind(this)
+      this.setNotification = this.setNotification.bind(this)
+      this.clearmessages = this.clearmessages.bind(this)
+      this.successFullPost = this.successFullPost.bind(this)
+      this.loginFromCache = this.loginFromCache.bind(this)
+      this.toggleVisibility = this.toggleVisibility.bind(this)
+      this.likePressed = this.likePressed.bind(this)
+      this.deleteBlog = this.deleteBlog.bind(this)
+    }
+    catch (e) {
+      console.log(e);
+    }
 
   }
 
@@ -125,37 +130,43 @@ class App extends React.Component {
 }
 
   handleLoginResult = async(result) => {
-    let loggedInUser = null
-    if (result.token) {
-      loggedInUser = {
-        name: result.name,
-        username: result.username,
-        password: result.password
+
+    try {
+      let loggedInUser = null
+      if (result.token) {
+        loggedInUser = {
+          name: result.name,
+          username: result.username,
+          password: result.password
+        }
+        utils.setUserToMemory(loggedInUser)
+
       }
-      utils.setUserToMemory(loggedInUser)
+      else {
+        return
+      }
 
-    }
-    else {
-      return
-    }
+      let blogs = await blogService.getAll(result.token)
+      blogs.sort((a, b) => b.likes - a.likes)
+      for (let i = 0; i < blogs.length; i++) {
+        blogs[i].visibility = false
+      }
+      console.log('blogs', blogs);
 
-    let blogs = await blogService.getAll(result.token)
-    blogs.sort((a, b) => b.likes - a.likes)
-    for (let i = 0; i < blogs.length; i++) {
-      blogs[i].visibility = false
+      this.setState({
+          hideWhenLoggedIn: utils.displayNone(),
+          showWhenLoggedIn: utils.displayNormal(),
+          user: loggedInUser,
+          username: '',
+          password: '',
+          token: 'bearer ' + result.token,
+          blogs: blogs,
+          counter: this.state.counter + 1,
+        })
     }
-    console.log('blogs', blogs);
-
-    this.setState({
-        hideWhenLoggedIn: utils.displayNone(),
-        showWhenLoggedIn: utils.displayNormal(),
-        user: loggedInUser,
-        username: '',
-        password: '',
-        token: 'bearer ' + result.token,
-        blogs: blogs,
-        counter: this.state.counter + 1,
-      })
+    catch (e) {
+      console.log(e);
+    }
 
   }
 
@@ -181,25 +192,39 @@ class App extends React.Component {
   }
 
   render() {
-    let user = {'username': this.state.username, 'password': this.state.password}
-    return (
-    <div>
-      <Notification message={this.state.successtext} error={this.state.errortext} />
-      <div style={this.state.hideWhenLoggedIn}>
-        <LoginComponent user={user} loginHandle = {this.handleLoginResult}/>
-      </div >
-      <div  style={this.state.showWhenLoggedIn}>
-        <UserComponent user={this.state.user} />
-      </div>
+
+    try {
+      console.log('this.state in render', this.state);
+      let user = {'username': this.state.username, 'password': this.state.password}
+      let userName = undefined
+      if (this.state.user) {
+        userName = this.state.user.username
+      }
+
+      return (
       <div>
-        <h2>blogs</h2>
-            <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} user = {this.state.user.username} deleteBlog  = {this.deleteBlog}/>
+        <Notification message={this.state.successtext} error={this.state.errortext} />
+        <div style={this.state.hideWhenLoggedIn}>
+          <LoginComponent user={user} loginHandle = {this.handleLoginResult}/>
+        </div >
+        <div  style={this.state.showWhenLoggedIn}>
+          <UserComponent user={this.state.user} />
+        </div>
+        <div>
+          <h2>blogs</h2>
+              <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} user = {userName} deleteBlog  = {this.deleteBlog}/>
+        </div>
+        <div style={this.state.showWhenLoggedIn}>
+          <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
+        </div>
       </div>
-      <div style={this.state.showWhenLoggedIn}>
-        <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
-      </div>
-    </div>
-    );
+      )
+    }
+    catch (e) {
+      console.log(e)
+
+
+    }
   }
 }
 

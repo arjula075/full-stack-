@@ -31,7 +31,6 @@ const Blog = (props) =>  {
   }
 
   if (blogs) {
-    console.log(blogs)
     return (
       blogs.map(blog => {
 
