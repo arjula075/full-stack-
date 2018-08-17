@@ -194,7 +194,7 @@ class App extends React.Component {
   render() {
 
     try {
-      console.log('this.state in render', this.state);
+      //console.log('this.state in render', this.state);
       let user = {'username': this.state.username, 'password': this.state.password}
       let userName = undefined
       if (this.state.user) {

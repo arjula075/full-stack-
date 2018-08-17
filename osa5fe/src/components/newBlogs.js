@@ -12,7 +12,7 @@ constructor(props) {
     counter: props.counter
   }
   this.sendBlog = props.sendBlog
-  console.log('stete in newBlogConstructor', this.state);
+  //console.log('state in newBlogConstructor', this.state);
 }
 
 handleLoginFieldChange = (event) => {
