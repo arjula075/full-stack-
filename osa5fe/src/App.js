@@ -11,6 +11,7 @@ const utils = require('./utils/utils.js')
 
 class App extends React.Component {
   constructor(props) {
+
     try {
       super(props)
       const cachedUser = utils.getUserFromMemory()
@@ -130,7 +131,7 @@ class App extends React.Component {
 }
 
   handleLoginResult = async(result) => {
-
+    console.log('do we get here in tests?');
     try {
       let loggedInUser = null
       if (result.token) {
@@ -151,7 +152,6 @@ class App extends React.Component {
       for (let i = 0; i < blogs.length; i++) {
         blogs[i].visibility = false
       }
-      console.log('blogs', blogs);
 
       this.setState({
           hideWhenLoggedIn: utils.displayNone(),

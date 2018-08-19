@@ -5,7 +5,6 @@ import SimpleBlog from '../components/simpleBlog'
 
 const Blog = (props) =>  {
 
-    console.log('props in blog const', props);
     const blogs = props.blogs
     const label = 'Näytä tiedot'
 
@@ -33,7 +32,7 @@ const Blog = (props) =>  {
         blogs.map(blog => {
 
           return (
-            <div key={blog._id} style={blogStyle()} class='blogContainer'>
+            <div key={blog._id} style={blogStyle()} className='blogContainer'>
               <Togglable blog={blog} toggleVisibility={props.toggleVisibility} likePressed={props.likePressed} buttonLabel ={blog.title} user = {props.user} deleteBlog  = {props.deleteBlog}>
                 <p>{blog.author}</p>
                 <p>{blog.title}</p>

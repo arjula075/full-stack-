@@ -1,6 +1,7 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import App from '../App'
+import Togglable from '../components/toggable'
 import SimpleBlog from './simpleBlog'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
@@ -14,7 +15,7 @@ const utils = require('../utils/utils.js')
 utils.logOut()
 
 const auxiliaryFunc = (data) => {
-  console.log('auxiliaryFunc', data);
+  console.log('auxiliaryFunc ', data);
 }
 
 const testUser = {
@@ -107,72 +108,45 @@ describe('<SimpleBlog />', () => {
 
 describe('<App /> empty to beging with', async() => {
   // yae, found a bug with tests!
-  test('check that we do not have blogs rendered', () => {
+
+  let blogCont
+  let app
+  beforeAll(() => {
+      blogCont = mount(<Blog blogs={props4Blog.blogs} toggleVisibility={props4Blog.toggleVisibility} likePressed={props4Blog.likePressed} user = {props4Blog.userName} deleteBlog  = {props4Blog.deleteBlog}/>)
+      app = mount(<App />)
+    })
+
+  test('first we check that we do get some blogs with hard coded data', () => {
     //console.log('props4Blog', props4Blog);
     //let app = mount(<App />)
     //app.update()
     //console.log('app, after update', app.html())
     //const contentDiv = app.find('.blogEntry')
     //console.log('contentDiv, after update', contentDiv.debug())
-      let blogCont
-      try  {
-        blogCont = mount(<Blog blogs={props4Blog.blogs} toggleVisibility={props4Blog.toggleVisibility} likePressed={props4Blog.likePressed} user = {props4Blog.userName} deleteBlog  = {props4Blog.deleteBlog}/>)
-      }
-      catch (e2) {
-        console.log('e2', e2);
-      }
 
-      try  {
-        console.log('blogCont', blogCont.debug());
-        }
-      catch (e3) {
-        console.log('e3', e3);
-      }
+    const blogComponents = blogCont.find(Togglable)
+    expect(blogComponents.length).toEqual(initialBlogs.length)
+    })
 
-      try  {
-        blogCont.update()
-        }
-      catch (e3) {
-        console.log('e3', e3);
-      }
-
-      try  {
-        console.log('blogCont, after update', blogCont.debug())
-        }
-      catch (e3) {
-        console.log('e3', e3);
-      }
-      let contentDivWithData
-      try  {
-        contentDivWithData = blogCont.find('.blogEntry')
-        }
-      catch (e3) {
-        console.log('e3', e3);
-      }
-
-      try  {
-        console.log('contentDivWithData, after update', typeof contentDivWithData, contentDivWithData.length)
-        }
-      catch (e3) {
-        console.log('e3', e3);
-      }
-      try  {
-        for (var key in contentDivWithData) {
-            if (p.hasOwnProperty(key)) {
-              console.log(key + " -> " + p[key]);
-            }
-        }
-      }
-      catch (e3) {
-        console.log('e3', e3);
-      }
-
-
-}
-
+    test('then we check that when logged out, we get nada', () => {
+      const blogComponents = app.find(Togglable)
+      expect(blogComponents.length).toEqual(0)
+      app.unmount()
+    })
   })
+  describe('<App /> person in memory', async() => {
+    let app
+    beforeAll(() => {
+        utils.setUserToMemory(testUser)
+        console.log(utils.getUserFromMemory())
+        app = mount(<App />)
+      })
 
-
-
+    test('then we check that when logged in, we do get stuff', async() => {
+      app.update()
+      console.log(app.html());
+      const blogComponents = app.find(Togglable)
+      expect(blogComponents.length).toEqual(initialBlogs.length)
+    })
 
 })

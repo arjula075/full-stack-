@@ -1,6 +1,8 @@
 const loginUser = {
   token: 'token',
-  username: 'test', name: 'Mikko Mallikas'
+  username: 'test',
+  name: 'test',
+  password: 'token'
 }
 
 const login = () => {
