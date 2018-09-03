@@ -22,8 +22,16 @@ const initialState = anecdotesAtStart.map(asObject)
 const reducer = (state = initialState, action) => {
   console.log('state now: ',state)
   console.log('action', action)
-  
-  return state
+  const newState = JSON.parse(JSON.stringify(state))
+  switch (action.type) {
+    case 'VOTE':
+      const ind = newState.findIndex((anecdote) => anecdote.id === action.data.id)
+      newState[ind].votes++
+      return newState
+    default:
+      return state
+  }
+
 }
 
 export default reducer
