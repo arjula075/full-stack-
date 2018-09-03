@@ -7,14 +7,33 @@ class App extends React.Component {
     super(props)
     console.log('App props', props);
     this.state = {
-      store: props.store
+      store: props.store,
+      inputValue: ''
     }
+    this.changeValue = this.changeValue.bind(this)
   }
 
-  klik = (anecdote) => () => {
+  changeValue(event){
+    event.preventDefault()
+    this.setState({
+      inputValue: event.target.value
+     })
+     return false
+  }
+
+
+  klik = (anecdote, type) => () => {
     console.log('anecdote', anecdote)
+    if (type === 'CREATE') {
+      const inputValue = anecdote
+      anecdote = {
+        content: inputValue,
+        id: 0,
+        votes: 0
+      }
+    }
     this.props.store.dispatch({
-      type: 'VOTE',
+      type: type,
       data: anecdote
   })
     //this.props.store.dispatch({ type: nappi})
@@ -23,6 +42,7 @@ class App extends React.Component {
 
   render() {
     const anecdotes = this.props.store.getState()
+    console.log('anecdotes', anecdotes);
     anecdotes.sort(function(a, b){return b.votes - a.votes})
     return (
       <div>
@@ -34,14 +54,14 @@ class App extends React.Component {
             </div>
             <div>
               has {anecdote.votes}
-              <button onClick={this.klik(anecdote)}>vote</button>
+              <button onClick={this.klik(anecdote, 'VOTE')}>vote</button>
             </div>
           </div>
         )}
         <h2>create new</h2>
         <form>
-          <div><input /></div>
-          <button>create</button>
+          <div><input value={this.state.inputValue} onChange={this.changeValue}/></div>
+          <button type='button' onClick={this.klik(this.state.inputValue, 'CREATE')}>create</button>
         </form>
       </div>
     )

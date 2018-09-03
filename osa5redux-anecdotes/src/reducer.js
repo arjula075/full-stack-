@@ -28,6 +28,11 @@ const reducer = (state = initialState, action) => {
       const ind = newState.findIndex((anecdote) => anecdote.id === action.data.id)
       newState[ind].votes++
       return newState
+    case 'CREATE':
+      action.data.id = getId()
+      // ok, so this is a hack... but how should it work?
+      anecdotesAtStart.push(action.data.content)
+      return state.concat(action.data)
     default:
       return state
   }
