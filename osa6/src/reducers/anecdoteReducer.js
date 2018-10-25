@@ -17,6 +17,18 @@ const asObject = (anecdote) => {
   }
 }
 
+export const anecdoteCreation = (content) => {
+  console.log('content', content);
+  return {
+    type: 'CREATE',
+    data: {
+      content: content,
+      id: getId(),
+      votes: 0
+    }
+  }
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (store = initialState, action) => {
@@ -27,8 +39,8 @@ const reducer = (store = initialState, action) => {
     return [...old, { ...voted, votes: voted.votes+1} ]
   }
   if (action.type === 'CREATE') {
-
-    return [...store, { content: action.content, id: getId(), votes:0 }]
+    console.log('action', action);
+    return [...store, { content: action.data.content, id: action.data.id, votes:action.data.votes }]
   }
 
   return store
