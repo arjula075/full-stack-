@@ -29,7 +29,7 @@ class AnecdoteForm extends React.Component {
     setTimeout(() => {
       console.log('are we here?');
       store.dispatch(notificationOff())
-    }, 1000)
+    }, 5000)
 
 
     e.target.anecdote.value = ''

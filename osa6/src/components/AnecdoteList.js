@@ -20,12 +20,23 @@ handleVote = (vote) => {
 }
 
   render() {
+    const filter = this.props.store.getState().filter
     const anecdotes = this.props.store.getState().anecdote
-    console.log(anecdotes);
+    console.log('filter', filter);
+    console.log('filter', typeof filter);
+
+    let anecdotesToShow = anecdotes
+    if (filter !== '') {
+      console.log(anecdotes);
+      anecdotesToShow = anecdotes.filter((anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
+    }
+
+    console.log('anecdotesToShow', anecdotesToShow);
+    console.log('anecdotesToShow', typeof anecdotesToShow);
     return (
       <div>
         <h2>Anecdotes</h2>
-        {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
+        {anecdotesToShow.sort((a, b) => b.votes - a.votes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
