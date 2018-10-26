@@ -5,21 +5,29 @@ const initialState = {
 
 const notificationReducer = (state = initialState, action) => {
   console.log('ACTION: ', action)
+  console.log('STATE: ', state)
   switch (action.type) {
-  case 'SET_NOTIFICATION':
-    return action.notification
+  case 'NOTIFICATION_ON':
+    return {
+      notification: action.notification,
+      type: action.type
+    }
   default:
-    return state
+    return initialState
   }
 }
 
 export const notificationChange = (notification) => {
+
   return {
-    type: 'SET_NOTIFICATION',
-    notification
+    type: notification.type,
+    notification: notification.notification
   }
 }
 
-
+export const notificationOff = () => {
+  console.log('should be here', initialState);
+  return initialState
+}
 
 export default notificationReducer

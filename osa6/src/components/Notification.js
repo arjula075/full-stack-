@@ -2,8 +2,12 @@ import React from 'react'
 
 class Notification extends React.Component {
   render() {
-    const notification = this.props.store.getState().notification
-    console.log(notification);
+    let notification = ''
+    if (this.props.store.getState().notification.type !== 'NO_NOTIFICATION') {
+      notification = this.props.store.getState().notification.notification
+    }
+
+    console.log('notification',notification);
     const style = {
       border: 'solid',
       padding: 10,
@@ -11,7 +15,7 @@ class Notification extends React.Component {
     }
     return (
       <div style={style}>
-        {notification.notification}
+        {notification}
       </div>
     )
   }
