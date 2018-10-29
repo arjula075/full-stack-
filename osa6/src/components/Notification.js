@@ -1,10 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { notificationChange } from './../reducers/notificationReducer'
 
 class Notification extends React.Component {
   render() {
-    let notification = ''
-    if (this.props.store.getState().notification.type !== 'NO_NOTIFICATION') {
-      notification = this.props.store.getState().notification.notification
+    console.log('props', this.props);
+    const { notification } = this.props
+    console.log('notification', notification);
+    let notificationText = ''
+    if (notification.type !== 'NO_NOTIFICATION') {
+      notificationText = notification.notification
     }
 
     console.log('notification',notification);
@@ -15,10 +20,22 @@ class Notification extends React.Component {
     }
     return (
       <div style={style}>
-        {notification}
+        {notificationText}
       </div>
     )
   }
 }
 
-export default Notification
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification,
+    filter: state.filter
+  }
+}
+
+const ConnectedNotification = connect(
+  mapStateToProps,
+  { notificationChange }
+)(Notification)
+
+export default ConnectedNotification
