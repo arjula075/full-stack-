@@ -47,6 +47,7 @@ const reducer = (store = [], action) => {
     const voted = store.find(a => a.id === action.data.id)
     console.log('old', old);
     console.log('voted', voted);
+    anecdoteService.updateAnecdote(voted)
     return [...old, { ...voted, votes: voted.votes+1} ]
   }
   if (action.type === 'CREATE') {

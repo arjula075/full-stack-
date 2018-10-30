@@ -10,4 +10,10 @@ const addAnecdote = async(value) => {
   return response.data
 }
 
-export default { getAll, addAnecdote }
+const updateAnecdote = (newObject) => {
+  console.log('put', newObject)
+  const request = axios.put('http://localhost:3001/anecdotes/' + newObject.id, newObject)
+  return request.then(response => response.data)
+}
+
+export default { getAll, addAnecdote, updateAnecdote }
