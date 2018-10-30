@@ -18,23 +18,11 @@ handleVote = (vote) => {
 }
 
   render() {
-    const filter = this.props.filter
-    const anecdotes = this.props.anecdote
-    console.log('filter', filter);
-    console.log('filter', typeof filter);
-
-    let anecdotesToShow = anecdotes
-    if (filter !== '') {
-      console.log(anecdotes);
-      anecdotesToShow = anecdotes.filter((anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
-    }
-
-    console.log('anecdotesToShow', anecdotesToShow);
-    console.log('anecdotesToShow', typeof anecdotesToShow);
+    console.log('this.props', this.props);
     return (
       <div>
         <h2>Anecdotes</h2>
-        {anecdotesToShow.sort((a, b) => b.votes - a.votes).map(anecdote =>
+        {this.props.anecdotesToShow.sort((a, b) => b.votes - a.votes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
@@ -55,10 +43,21 @@ handleVote = (vote) => {
   }
 }
 
+const anecdotesToShow = (anecdotes, filter) => {
+  console.log('filter', filter);
+  if (filter !== '') {
+    console.log(anecdotes);
+    return anecdotes.filter((anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
+  }
+  else {
+    return anecdotes
+  }
+}
+
+
 const mapStateToProps = (state) => {
   return {
-    anecdote: state.anecdote,
-    filter: state.filter
+    anecdotesToShow: anecdotesToShow(state.anecdote, state.filter)
   }
 }
 
