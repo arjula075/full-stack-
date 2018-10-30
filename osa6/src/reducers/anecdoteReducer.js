@@ -29,13 +29,31 @@ export const anecdoteCreation = (content) => {
   }
 }
 
+export const vote = (content) => {
+  console.log('content', content);
+  return {
+    type: 'VOTE',
+    data: {
+      content: content,
+      id:content.id,
+      votes: content.votes
+    }
+  }
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (store = initialState, action) => {
-  if (action.type==='VOTE') {
-    const old = store.filter(a => a.id !==action.id)
-    const voted = store.find(a => a.id === action.id)
 
+const reducer = (store = initialState, action) => {
+  console.log('action', action);
+  console.log('store', store);
+
+  if (action.type==='VOTE') {
+    console.log('action id', action.data.id);
+    const old = store.filter(a => a.id !== action.data.id)
+    const voted = store.find(a => a.id === action.data.id)
+    console.log('old', old);
+    console.log('voted', voted);
     return [...old, { ...voted, votes: voted.votes+1} ]
   }
   if (action.type === 'CREATE') {

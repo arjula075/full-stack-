@@ -1,27 +1,25 @@
 import React from 'react'
-import { notificationChange } from './../reducers/notificationReducer'
-import { notificationOff } from './../reducers/notificationReducer'
+import { connect } from 'react-redux'
+import { notificationChange, notificationOff } from './../reducers/notificationReducer'
+import { vote } from './../reducers/anecdoteReducer'
 
 class AnecdoteList extends React.Component {
 
 handleVote = (vote) => {
-  const store = this.props.store
-  store.dispatch(vote)
-  store.dispatch(
-    notificationChange({
+  this.props.vote(vote)
+  this.props.notificationChange({
       notification: 'Voted for ' + vote.id,
       type: 'NOTIFICATION_ON'
     })
-  )
   setTimeout(() => {
     console.log('are we here?');
-    store.dispatch(notificationOff())
+    this.props.notificationOff()
   }, 5000)
 }
 
   render() {
-    const filter = this.props.store.getState().filter
-    const anecdotes = this.props.store.getState().anecdote
+    const filter = this.props.filter
+    const anecdotes = this.props.anecdote
     console.log('filter', filter);
     console.log('filter', typeof filter);
 
@@ -57,4 +55,16 @@ handleVote = (vote) => {
   }
 }
 
-export default AnecdoteList
+const mapStateToProps = (state) => {
+  return {
+    anecdote: state.anecdote,
+    filter: state.filter
+  }
+}
+
+const ConnectedAnecdoteList = connect(
+  mapStateToProps,
+  { notificationOff, notificationChange , vote },
+)(AnecdoteList)
+
+export default ConnectedAnecdoteList
