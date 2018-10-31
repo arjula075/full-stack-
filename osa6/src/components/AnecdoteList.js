@@ -30,7 +30,7 @@ handleVote = (vote) => {
             <div>
               has {anecdote.votes}
               <button onClick={() =>
-                this.handleVote({ type: 'VOTE', id: anecdote.id })
+                this.handleVote({ type: 'VOTE', id: anecdote.id, votes: anecdote.votes })
 
               }>
                 vote

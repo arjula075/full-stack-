@@ -6,7 +6,6 @@ import { notificationChange , notificationOff} from './../reducers/notificationR
 class AnecdoteForm extends React.Component {
 
   turnNotificationOff = () => {
-    console.log('here');
     this.props.notificationOff()
   }
 
@@ -20,11 +19,8 @@ class AnecdoteForm extends React.Component {
         type: 'NOTIFICATION_ON'
       })
     setTimeout(() => {
-      console.log('are we here?');
       this.props.notificationOff()
     }, 5000)
-
-
     e.target.anecdote.value = ''
   }
    render() {

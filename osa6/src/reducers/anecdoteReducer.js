@@ -8,26 +8,33 @@ export const anecdoteCreation = (content) => {
   resObj.id = getId()
   resObj.votes = 0
   resObj.content = content
-  anecdoteService.addAnecdote(resObj)
-  return {
-    type: 'CREATE',
-    data: {
-      content: content,
-      id: getId(),
-      votes: 0
-    }
+  return async (dispatch) => {
+    anecdoteService.addAnecdote(resObj)
+    dispatch({
+      type: 'CREATE',
+      data: {
+        content: content,
+        id: getId(),
+        votes: 0
+      }
+    })
   }
 }
 
 export const vote = (content) => {
-  return {
-    type: 'VOTE',
-    data: {
-      content: content,
-      id:content.id,
-      votes: content.votes
-    }
+  return async (dispatch) => {
+    content.votes = content.votes + 1
+    anecdoteService.updateAnecdote(content)
+    dispatch({
+      type: 'VOTE',
+      data: {
+        content: content,
+        id:content.id,
+        votes: content.votes
+      }
+    })
   }
+
 }
 
 export const anecdoteInitialization = () => {
@@ -48,9 +55,6 @@ const reducer = (store = [], action) => {
     console.log('action id', action.data.id);
     const old = store.filter(a => a.id !== action.data.id)
     const voted = store.find(a => a.id === action.data.id)
-    console.log('old', old);
-    console.log('voted', voted);
-    anecdoteService.updateAnecdote(voted)
     return [...old, { ...voted, votes: voted.votes+1} ]
   }
   if (action.type === 'CREATE') {
