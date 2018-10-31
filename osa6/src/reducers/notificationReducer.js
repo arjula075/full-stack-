@@ -17,17 +17,17 @@ const notificationReducer = (state = initialState, action) => {
   }
 }
 
-export const notificationChange = (notification) => {
-
-  return {
-    type: notification.type,
-    notification: notification.notification
+export const notificationChange = (notification, time) => {
+  return async (dispatch) => {
+    dispatch({
+      type: notification.type,
+      notification: notification.notification
+    })
+    setTimeout(() => {
+      dispatch(initialState)
+    }, time * 1000)
   }
 }
 
-export const notificationOff = () => {
-  console.log('should be here', initialState);
-  return initialState
-}
 
 export default notificationReducer

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { notificationChange, notificationOff } from './../reducers/notificationReducer'
+import { notificationChange } from './../reducers/notificationReducer'
 import { vote } from './../reducers/anecdoteReducer'
 
 class AnecdoteList extends React.Component {
@@ -10,11 +10,7 @@ handleVote = (vote) => {
   this.props.notificationChange({
       notification: 'Voted for ' + vote.id,
       type: 'NOTIFICATION_ON'
-    })
-  setTimeout(() => {
-    console.log('are we here?');
-    this.props.notificationOff()
-  }, 5000)
+    }, 1)
 }
 
   render() {
@@ -63,7 +59,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedAnecdoteList = connect(
   mapStateToProps,
-  { notificationOff, notificationChange , vote },
+  { notificationChange , vote },
 )(AnecdoteList)
 
 export default ConnectedAnecdoteList
