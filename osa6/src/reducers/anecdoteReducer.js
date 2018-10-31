@@ -30,10 +30,13 @@ export const vote = (content) => {
   }
 }
 
-export const anecdoteInitialization = (data) => {
-  return {
-    type: 'INIT',
-    data
+export const anecdoteInitialization = () => {
+  return async (dispatch) => {
+    const notes = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT',
+      data: notes
+    })
   }
 }
 
