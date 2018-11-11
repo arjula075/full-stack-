@@ -156,6 +156,12 @@ class App extends React.Component {
   }
 
   render() {
+    const messageStyle = {
+      color: 'lightgray',
+      fontStyle: 'italic',
+      fontSize: 11
+    }
+
     const anecdoteById = (id) =>
       this.state.anecdotes.find(a => a.id === id)
 
@@ -170,7 +176,7 @@ class App extends React.Component {
               <Link to="/anecdotes">anecdotes</Link>
             </div>
             <div>
-              {this.state.message}
+              <div style={messageStyle}>{this.state.message}</div>
               <Route exact path="/" render={() => <About />} />
               <Route exact path="/anecdotes" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
               <Route exact path="/anecdotes/:id" render={({match}) =>
