@@ -1,5 +1,12 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
+import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+
+const tooltip = (
+  <Tooltip id="tooltip">
+    <strong>Hey You!</strong> Press create to create.
+  </Tooltip>
+);
 
 const Anecdote = ({dote}) => {
   return(
@@ -14,25 +21,46 @@ const Anecdote = ({dote}) => {
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >
-          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>)}
-    </ul>
+    <Table  striped>
+      <tbody>
+        {anecdotes.map(anecdote =>
+          <tr key={anecdote.id}>
+            <td><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></td>
+            <td>{anecdote.author}</td>
+          </tr>
+        )}
+      </tbody>
+    </Table >
+
   </div>
 )
 
 const About = () => (
   <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
+    <Grid>
+      <Row className="show-grid">
+        <Col xs={10} md={8}>
+          <p>According to Wikipedia:</p>
 
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
+          <em>An anecdote is a brief, revealing account of an individual person or an incident.
+            Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
+            such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
+            An anecdote is "a story with a point."</em>
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+            <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+        </Col>
+        <Col>
+        <Media>
+          <Media.Body>
+            <Media.Heading>Ada Lovelace</Media.Heading>
+            </Media.Body>
+            <Media.Left>
+            <Image  width={256} height={256} src="https://www.biography.com/.image/t_share/MTE4MDAzNDEwODQwOTQ2MTkw/ada-lovelace-20825279-1-402.jpg" alt="thumbnail" circle />
+            </Media.Left>
+          </Media>
+        </Col>
+      </Row>
+    </Grid>
   </div>
 )
 
@@ -89,7 +117,9 @@ class CreateNew extends React.Component {
               url for more info
               <input name='info' value={this.state.info} onChange={this.handleChange} />
             </div>
-            <button>create</button>
+              <OverlayTrigger placement="bottom" overlay={tooltip}>
+                <Button bsStyle="primary" bsSize="large">create</Button>
+              </OverlayTrigger>
           </form>
       </div>
     )
@@ -175,7 +205,7 @@ class App extends React.Component {
       this.state.anecdotes.find(a => a.id === id)
 
     return (
-      <div>
+      <div className="container">
         <Router>
           <div>
             <div style={navStyle}>
