@@ -1,14 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
-const Menu = () => (
-  <div>
-    <a href='#'>anecdotes</a>&nbsp;
-    <a href='#'>create new</a>&nbsp;
-    <a href='#'>about</a>&nbsp;
-  </div>
-)
-
 const Anecdote = ({dote}) => {
   return(
   <div>
@@ -69,12 +61,15 @@ class CreateNew extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
+    console.log('history', this.props);
     this.props.addNew({
       content: this.state.content,
       author: this.state.author,
       info: this.state.info,
       votes: 0
     })
+    this.props.history.push('/anecdotes')
+
   }
 
   render() {
@@ -127,9 +122,21 @@ class App extends React.Component {
     }
   }
 
+  clearmessages = () => {
+    this.setState({
+      message: ''
+    })
+  }
+
   addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
-    this.setState({ anecdotes: this.state.anecdotes.concat(anecdote) })
+    this.setState({
+                  anecdotes: this.state.anecdotes.concat(anecdote),
+                  message: 'lisätty uusi anekdootti ' + anecdote.content
+                  })
+    setTimeout(() => {
+          					this.clearmessages()
+          				}, 2000)
   }
 
   anecdoteById = (id) =>
@@ -163,13 +170,14 @@ class App extends React.Component {
               <Link to="/anecdotes">anecdotes</Link>
             </div>
             <div>
+              {this.state.message}
               <Route exact path="/" render={() => <About />} />
               <Route exact path="/anecdotes" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
               <Route exact path="/anecdotes/:id" render={({match}) =>
                   <Anecdote dote={anecdoteById(match.params.id)} />}
               />
               <Route path="/about" render={() => <About />} />
-              <Route path="/create" render={() => <CreateNew addNew={this.addNew}/>} />
+              <Route path="/create" render={({history}) => <CreateNew history={history} addNew={this.addNew}/>} />
             </div>
             <Footer />
           </div>
