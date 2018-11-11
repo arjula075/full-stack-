@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
 
 const Anecdote = ({dote}) => {
   return(
@@ -161,6 +161,15 @@ class App extends React.Component {
       fontStyle: 'italic',
       fontSize: 11
     }
+    const actStyle = {
+      fontWeight: "bold",
+      color: "blue"
+    }
+    const navStyle = {
+      backgroundColor: 'lightgray',
+      color: 'gray',
+      fontStyle: 'italic'
+    }
 
     const anecdoteById = (id) =>
       this.state.anecdotes.find(a => a.id === id)
@@ -169,11 +178,11 @@ class App extends React.Component {
       <div>
         <Router>
           <div>
-            <div>
-              <Link to="/">home</Link> &nbsp;
-              <Link to="/create">create new</Link> &nbsp;
-              <Link to="/about">about</Link>  &nbsp;
-              <Link to="/anecdotes">anecdotes</Link>
+            <div style={navStyle}>
+              <NavLink  to="/" activeStyle={actStyle}>home</NavLink > &nbsp;
+              <NavLink  to="/create" activeStyle={actStyle}>create new</NavLink > &nbsp;
+              <NavLink  to="/about" activeStyle={actStyle}>about</NavLink >  &nbsp;
+              <NavLink  to="/anecdotes" activeStyle={actStyle}>anecdotes</NavLink >
             </div>
             <div>
               <div style={messageStyle}>{this.state.message}</div>
