@@ -1,17 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { createStore } from 'redux'
-import App from './App';
-import reducer from './reducer'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
 
-const store = createStore(reducer)
-
-const render = () => {
-  ReactDOM.render(
-    <App store={store} />,
-    document.getElementById('root')
-  )
-}
-
-render()
-store.subscribe(render)
+ReactDOM.render(<App />, document.getElementById('root'))
