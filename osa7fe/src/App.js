@@ -1,229 +1,64 @@
-// No, 5.5 tulikin tehtyä heti kärkeen
-
 import React from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import LoginComponent from './components/login'
 import UserComponent from './components/user'
 import NewBlogComponent from './components/newBlogs'
-import loginService from './services/login'
+import { connect } from 'react-redux'
+import { blogInitialization } from './reducers/blogReducer'
+import { loggedIn } from './reducers/visibilityReducer'
+import { notificationChange } from './reducers/notificationReducer'
 const utils = require('./utils/utils.js')
 
 class App extends React.Component {
-  constructor(props) {
-
-    try {
-      super(props)
-      const cachedUser = utils.getUserFromMemory()
-      this.state = {
-          blogs: [],
-          username: '',
-          password: '',
-          user: cachedUser,
-          hideWhenLoggedIn: utils.displayNormal(),
-          showWhenLoggedIn: utils.displayNone(),
-          token: null,
-          counter: 0,
-          fetchedPassword: cachedUser ? cachedUser.password : null,
-        }
-      this.handleLoginResult = this.handleLoginResult.bind(this)
-      this.sendBlog = this.sendBlog.bind(this)
-      this.setNotification = this.setNotification.bind(this)
-      this.clearmessages = this.clearmessages.bind(this)
-      this.successFullPost = this.successFullPost.bind(this)
-      this.loginFromCache = this.loginFromCache.bind(this)
-      this.toggleVisibility = this.toggleVisibility.bind(this)
-      this.likePressed = this.likePressed.bind(this)
-      this.deleteBlog = this.deleteBlog.bind(this)
-    }
-    catch (e) {
-      console.log(e);
-    }
-
-  }
-
-  toggleVisibility = (id) => {
-    console.log('id is vis', id)
-    const pivotBlogs = this.state.blogs
-    const index = pivotBlogs.findIndex(blog => blog._id == id)
-    if (index > -1) {
-      pivotBlogs[index].visibility =  !pivotBlogs[index].visibility
-    }
-    this.setState({
-      blogs: pivotBlogs
-    })
-  }
-
-  likePressed = async(blog) => {
-    console.log('like pressed', blog)
-    blog.visibility = undefined
-    blog.likes = blog.likes + 1
-    await blogService.updateBlog(blog, this.state.token)
-    await this.successFullPost()
-    this.toggleVisibility(blog._id)
-    this.setNotification('Yeah, new like')
-  }
-
-  deleteBlog = async(blog) => {
-    console.log('delete blog in app', blog)
-    await blogService.deleteBlog(blog, this.state.token)
-    this.setNotification('blog ' + blog.title + ' was deleted')
-    this.successFullPost()
-
-  }
 
   componentDidMount = async() => {
-    if (this.state.user) {
-      await this.loginFromCache(this.state.user)
-      const  blogs = await blogService.getAll(this.state.token)
-      blogs.sort((a, b) => b.likes - a.likes)
-      for (let i = 0; i < blogs.length; i++) {
-        blogs[i].visibility = false
+      const cachedUser = utils.getUserFromMemory()
+      await this.props.blogInitialization(cachedUser)
+      const user = this.props.blogs.cachedUser
+      if (user && user.token) {
+        this.props.loggedIn()
       }
-      this.setState({ blogs })
     }
-  }
-
-  loginFromCache = async(cachedUser) => {
-    try {
-      const result = await loginService.login(cachedUser)
-      this.handleLoginResult(result)
-      this.setNotification('kirjautuminen onnistui')
-    }
-    catch(e) {
-      this.setNotification('NA', 'kirjautuminen epäonnistui')
-    }
-    const result = await loginService.login(cachedUser)
-    this.handleLoginResult(result)
-  }
-
-  successFullPost = async() => {
-    let blogs = await blogService.getAll(this.state.token)
-    blogs.sort((a, b) => b.likes - a.likes)
-    for (let i = 0; i < blogs.length; i++) {
-      blogs[i].visibility = false
-    }
-    this.setState({ blogs })
-  }
-
-  sendBlog = async(blog) => {
-    const result = await blogService.createBlog(blog, this.state.token)
-    try {
-      let newBlogs = await blogService.getAll(this.state.token)
-      newBlogs.sort((a, b) => b.likes - a.likes)
-      for (let i = 0; i < newBlogs.length; i++) {
-        newBlogs[i].visibility = false
-      }
-      this.setState({blogs: newBlogs})
-      this.setNotification('Good job')
-    }
-    catch (e) {
-      console.log(e)
-      this.setNotification('NA', 'failed')
-    }
-  }
-
-  clearmessages() {
-  this.setState({
-    successtext: null,
-    errortext: null
-  })
-}
-
-  handleLoginResult = async(result) => {
-    console.log('do we get here in tests?');
-    try {
-      let loggedInUser = null
-      if (result.token) {
-        loggedInUser = {
-          name: result.name,
-          username: result.username,
-          password: result.password
-        }
-        utils.setUserToMemory(loggedInUser)
-
-      }
-      else {
-        return
-      }
-
-      let blogs = await blogService.getAll(result.token)
-      blogs.sort((a, b) => b.likes - a.likes)
-      for (let i = 0; i < blogs.length; i++) {
-        blogs[i].visibility = false
-      }
-
-      this.setState({
-          hideWhenLoggedIn: utils.displayNone(),
-          showWhenLoggedIn: utils.displayNormal(),
-          user: loggedInUser,
-          username: '',
-          password: '',
-          token: 'bearer ' + result.token,
-          blogs: blogs,
-          counter: this.state.counter + 1,
-        })
-    }
-    catch (e) {
-      console.log(e);
-    }
-
-  }
-
-  setNotification = (notification, error) => {
-    if (!error) {
-    this.setState({
-  					successtext: notification
-  				})
-
-  				setTimeout(() => {
-  					this.clearmessages()
-  				}, 3000)
-  	}
-  	else {
-  				console.log(error)
-  				this.setState({
-  					errortext: error
-  				})
-  				setTimeout(() => {
-  					this.clearmessages()
-  				}, 3000)
-  		}
-  }
 
   render() {
-
+    console.log('props in app', this.props);
+    let message = ''
+    let error = ''
+    if (this.props.notification.type === 'NO_NOTIFICATION') {
+      message = ''
+      error = ''
+    }
+    else if (this.props.notification.type === 'NOTIFICATION_ON') {
+      message = this.props.notification.notification
+      error = ''
+    }
+    else if (this.props.notification.type === 'ERROR_ON') {
+      message = ''
+      error = this.props.notification.notification
+    }
     try {
-      //console.log('this.state in render', this.state);
-      let user = {'username': this.state.username, 'password': this.state.password}
-      let userName = undefined
-      if (this.state.user) {
-        userName = this.state.user.username
-      }
-
       return (
       <div>
-        <Notification message={this.state.successtext} error={this.state.errortext} />
-        <div style={this.state.hideWhenLoggedIn}>
-          <LoginComponent user={user} loginHandle = {this.handleLoginResult}/>
+        <Notification    message={message} error={error}/>
+        <div style={this.props.visibility.hideWhenLoggedIn}>
+          <LoginComponent />
         </div >
-        <div  style={this.state.showWhenLoggedIn}>
-          <UserComponent user={this.state.user} />
+        <div  style={this.props.visibility.showWhenLoggedIn}>
+          <UserComponent user={this.props.blogs.cachedUser} />
         </div>
         <div>
           <h2>blogs</h2>
-              <Blog blogs={this.state.blogs} toggleVisibility={this.toggleVisibility} likePressed={this.likePressed} user = {userName} deleteBlog  = {this.deleteBlog}/>
+              <Blog />
         </div>
-        <div style={this.state.showWhenLoggedIn}>
-          <NewBlogComponent token={this.state.token} counter={this.state.counter} sendBlog={this.sendBlog}/>
+        <div style={this.props.visibility.showWhenLoggedIn}>
+          <NewBlogComponent/>
         </div>
       </div>
       )
     }
     catch (e) {
       console.log(e)
-
-
+      return null
     }
   }
 }
@@ -248,4 +83,16 @@ const Notification = ({ message, error }) => {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  console.log('App mapStateToProps',state);
+  return {
+    blogs: state.blog,
+    visibility: state.visibility,
+    notification: state.notification
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  { blogInitialization, notificationChange, loggedIn }
+)(App)

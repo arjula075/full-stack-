@@ -1,13 +1,12 @@
 import React from 'react'
 
-const SimpleBlog = ({ blog, onClick }) => (
+const SimpleBlog = ({ blog }) => (
   <div>
     <div className='blogData'>
       {blog.title} {blog.author}
     </div>
     <div className='likeData'>
       blog has {blog.likes} likes
-      <button onClick={onClick}>like</button>
     </div>
   </div>
 )

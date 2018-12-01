@@ -1,7 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Togglable = (props) =>  {
+const Toggable = (props) =>  {
+
+  const handleVote = async(e) => {
+    await props.vote(props.blog, props.user.token)
+    props.notificationChange({
+      notification: 'Voted for blog',
+      type: 'NOTIFICATION_ON'
+    }, 1)
+  }
+
+  const toggleVisibility = (e) => {
+    props.toggleVisibility(props.blog)
+  }
 
   try {
     const blogStyle = () => {
@@ -13,26 +25,22 @@ const Togglable = (props) =>  {
         marginBottom: 5
       }
     }
-      const hideWhenVisible = { display: props.blog.visibility ? 'none' : '' }
-      const showWhenVisible = { display: props.blog.visibility ? '' : 'none' }
-      const showOwn = {display:  props.blog.user.username == props.user ? '' : 'none'}
+    const showWhenVisible = { display: props.blog.visibility ? '' : 'none' }
+    let showOwn = {display: 'none'}
 
-      const toggleVisibility = (props1) => {
+    if (props.blog.user) {
+       showOwn = {display:  props.blog.user.username === props.user.username ? '' : 'none'}
+    }
 
-        props.toggleVisibility(props.blog._id)
+    const deleteBlog = async(props1) => {
+      if (window.confirm('Do you really want to delete ' + props.blog.title +'?')) {
+          await props.deleteBlog(props.blog, props.user.token)
+          props.notificationChange({
+            notification: 'Blog' + props.blog.title + ' deleted',
+            type: 'NOTIFICATION_ON'
+          }, 1)
       }
-
-      const likePressed = (props1) => {
-        props.likePressed(props.blog)
-      }
-
-      const deleteBlog = (props1) => {
-        if (window.confirm('Do you really want to delete ' + props.blog.title +'?')) {
-            props.deleteBlog(props.blog)
-        }
-
-      }
-
+    }
       return (
         <div className='blogEntry'>
           <div>
@@ -41,10 +49,9 @@ const Togglable = (props) =>  {
           <div style={showWhenVisible}>
             <div style={blogStyle()}>
               {props.children}
-              <button onClick={likePressed}>like</button>
+              <button onClick={handleVote}>like</button>
               <button  style={showOwn} onClick={deleteBlog}>delete</button>
               <button onClick={toggleVisibility}>cancel</button>
-
             </div>
           </div>
         </div>
@@ -56,14 +63,15 @@ const Togglable = (props) =>  {
 
 }
 
-  // toggleVisibility={props.toggleVisibility} likePressed={props.likePressed} buttonLabel ={blog.title} user = {props.user} deleteBlog  = {props.deleteBlog}
-  Togglable.propTypes = {
+Toggable.propTypes = {
     toggleVisibility : PropTypes.func.isRequired,
-    likePressed : PropTypes.func.isRequired,
-    buttonLabel : PropTypes.string.isRequired,
-    user : PropTypes.string.isRequired,
+    user : PropTypes.object.isRequired,
     deleteBlog : PropTypes.func.isRequired,
+    vote : PropTypes.func.isRequired,
   }
 
-export default Togglable
+
+export default Toggable
+
+
 //<button onClick={toggleVisibility}>{props.buttonLabel}</button>

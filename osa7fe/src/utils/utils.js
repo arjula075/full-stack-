@@ -9,9 +9,23 @@ const getUserFromMemory = () => {
   }
 }
 
+const getBlogsFromMemory = () => {
+  const loggedBlogsJSON = window.localStorage.getItem('loggedBlogAppUserBlogs')
+  if (loggedBlogsJSON) {
+        window.localStorage.removeItem('loggedBlogAppUserBlogs')
+        const blogs = JSON.parse(loggedBlogsJSON)
+        return blogs
+  }
+  else {
+    return null
+  }
+}
+
 const setUserToMemory = (user) => {
-  console.log('setting user to memory', user);
   window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+}
+const setBlogsToMemory = (blogs) => {
+  window.localStorage.setItem('loggedBlogAppUserBlogs', JSON.stringify(blogs))
 }
 
 
@@ -32,10 +46,21 @@ const displayNormal = () => {
   }
 }
 
+const initializedFetchBlogArray = (blogs) => {
+  blogs.sort((a, b) => b.likes - a.likes)
+  for (let i = 0; i < blogs.length; i++) {
+    blogs[i].visibility = false
+  }
+  return blogs
+}
+
 module.exports = {
   getUserFromMemory,
   logOut,
   setUserToMemory,
   displayNone,
-  displayNormal
+  displayNormal,
+  setBlogsToMemory,
+  getBlogsFromMemory,
+  initializedFetchBlogArray
 }

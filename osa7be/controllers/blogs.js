@@ -84,6 +84,12 @@ blogsRouter.post('/', async(request, response) => {
 })
 
 blogsRouter.put('/:id', async(request, response) => {
+  validCall = utils.isValidCall(request)
+
+  if (validCall.statuscode !== 200) {
+    response.status(validCall.statuscode).json(validCall.status)
+    return
+  }
 
 	const updatedBlog = request.body
 

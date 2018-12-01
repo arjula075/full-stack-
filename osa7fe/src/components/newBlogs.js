@@ -1,77 +1,71 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { sendBlog } from './../reducers/blogReducer'
+import { notificationChange } from './../reducers/notificationReducer'
 
 class NewBlogComponent extends React.Component {
 
-constructor(props) {
-  super(props)
-  this.state = {
-    title: '',
-    author: '',
-    url: '',
-    token: props.token,
-    counter: props.counter
+  createNewBlog = async(event) => {
+    event.preventDefault()
+    const blog = {
+      'title': event.target.elements['title'].value,
+      'author': event.target.elements['author'].value,
+      'url': event.target.elements['url'].value
+    }
+    event.target.reset()
+    console.log('this props in newBlogs', this.props);
+    await this.props.sendBlog(blog, this.props.blogs.cachedUser.token)
+    this.props.notificationChange({
+      notification: 'New blog added',
+      type: 'NOTIFICATION_ON'
+    }, 1)
   }
-  this.sendBlog = props.sendBlog
-  //console.log('state in newBlogConstructor', this.state);
-}
 
-handleLoginFieldChange = (event) => {
-  this.setState({ [event.target.name]: event.target.value })
-}
-
-createNewBlog = async(event) => {
-  event.preventDefault()
-  console.log('create new with', this.state.title, this.state.author, this.state.url, this.state.token)
-  const blog = {'title': this.state.title, 'author': this.state.author, 'url': this.state.url}
-  this.setState({
-    title: '',
-    author: '',
-    url: '',})
-  this.sendBlog(blog)
-}
-
-render() {
-  const noShowStyle = {
-    display: 'none'
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.createNewBlog}>
+          <div>
+            title
+            <input
+              type="text"
+                name="title"
+                />
+          </div>
+          <div>
+            author
+            <input
+              type="text"
+                name="author"
+                />
+          </div>
+          <div>
+            url
+            <input
+              type="text"
+                name="url"
+                />
+          </div>
+          <button type="submit">create</button>
+        </form>
+      </div>
+    )
   }
-  return (
-    <div>
-      <form onSubmit={this.createNewBlog}>
-        <div>
-          title
-          <input
-            type="text"
-              name="title"
-              value={this.state.title}
-              onChange={this.handleLoginFieldChange}
-              />
-        </div>
-        <div>
-          author
-          <input
-            type="text"
-              name="author"
-              value={this.state.author}
-              onChange={this.handleLoginFieldChange}
-              />
-        </div>
-        <div>
-          url
-          <input
-            type="text"
-              name="url"
-              value={this.state.url}
-              onChange={this.handleLoginFieldChange}
-              />
-        </div>
-        <button type="submit">create</button>
-        <span style={noShowStyle}>{this.state.counter}</span>
-      </form>
-    </div>
-  )
-}
 
 }
 
+const mapStateToProps = (state) => {
+  return {
+    blogs: state.blog,
+    visibility: state.visibility,
+    notification: state.notification
+  }
+}
 
-export default NewBlogComponent
+const ConnectedNewBlogComponent = connect(
+  mapStateToProps,
+  { sendBlog, notificationChange },
+)(NewBlogComponent)
+
+
+export default ConnectedNewBlogComponent
