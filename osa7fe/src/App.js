@@ -24,7 +24,7 @@ class App extends React.Component {
       await this.props.blogInitialization(cachedUser)
       const user = this.props.blogs.cachedUser
       if (user && user.token) {
-        await this.props.getUsers()
+        await this.props.getUsers(user.token)
         this.props.loggedIn()
       }
     }
@@ -51,7 +51,7 @@ class App extends React.Component {
               <div style={this.props.visibility.showWhenLoggedIn}>
                 <Route exact path="/" render={() => <Blog />} />
                 <Route exact path="/users" render={() => <UserList users= {this.props.users} />} />
-                <Route exact path="/user/:id" render={({match}) =>
+                <Route exact path="/users/:id" render={({match}) =>
                     <User user={this.userById(match.params.id)} />}
                 />
                 <Route path="/blogs" render={() => <Blog />} />
