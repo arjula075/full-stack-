@@ -2,11 +2,18 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 const config = require('../utils/config')
+const utils = require('../utils/utils')
 
 usersRouter.get('/', async (request, response) => {
   try {
+    validCall = utils.isValidCall(request)
+    if (validCall.statuscode !== 200) {
+      response.status(validCall.statuscode).json(validCall.status)
+      return
+    }
     const users = await User.find({})
     .populate('blogs')
+    console.log('users', users);
     response.json(users.map(user => User.format(user)))
   }
   catch (err) {

@@ -1,9 +1,10 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
+const utils = require('./../utils/utils.js')
 
 const getAll = async(token) => {
   console.log('token',token)
-  const authString = makeAuthString(token)
+  const authString = utils.makeAuthString(token)
   const head =  {'headers' :{'Authorization': authString}}
   console.log('head',head)
 
@@ -13,7 +14,7 @@ const getAll = async(token) => {
 
 const createBlog = async(blog, token) => {
   console.log('token',token)
-  const authString = makeAuthString(token)
+  const authString = utils.makeAuthString(token)
   const head =  {'headers' :{'Authorization': authString}}
   console.log('head',head)
 
@@ -23,7 +24,7 @@ const createBlog = async(blog, token) => {
 
 const deleteBlog = async(blog, token) => {
   console.log('token',token)
-  const authString = makeAuthString(token)
+  const authString = utils.makeAuthString(token)
   const head =  {'headers' :{'Authorization': authString}}
   console.log('head',head)
   const url = baseUrl + '/' + blog._id
@@ -34,7 +35,7 @@ const deleteBlog = async(blog, token) => {
 
 const updateBlog = async(blog, token) => {
   console.log('token',token)
-  const authString = makeAuthString(token)
+  const authString = utils.makeAuthString(token)
   const head =  {'headers' :{'Authorization': authString}}
   console.log('head',head)
 
@@ -42,15 +43,6 @@ const updateBlog = async(blog, token) => {
   return request.then(response => response.data)
 }
 
-
-const makeAuthString = (token) => {
-  let authString = token
-  if (token && !token.toLowerCase().startsWith('bearer ')) {
-    authString = 'bearer '.concat(token)
-  }
-  return authString
-
-}
 
 export default {
   getAll,

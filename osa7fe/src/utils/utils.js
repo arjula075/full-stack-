@@ -54,6 +54,14 @@ const initializedFetchBlogArray = (blogs) => {
   return blogs
 }
 
+const makeAuthString = (token) => {
+  let authString = token
+  if (token && !token.toLowerCase().startsWith('bearer ')) {
+    authString = 'bearer '.concat(token)
+  }
+  return authString
+}
+
 module.exports = {
   getUserFromMemory,
   logOut,
@@ -62,5 +70,6 @@ module.exports = {
   displayNormal,
   setBlogsToMemory,
   getBlogsFromMemory,
-  initializedFetchBlogArray
+  initializedFetchBlogArray,
+  makeAuthString
 }
