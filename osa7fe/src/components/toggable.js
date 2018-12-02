@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
+const styles = require('./../utils/styles.js')
 
 const Toggable = (props) =>  {
 
@@ -16,15 +18,7 @@ const Toggable = (props) =>  {
   }
 
   try {
-    const blogStyle = () => {
-      return {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5
-      }
-    }
+    console.log('props in toggable', props);
     const showWhenVisible = { display: props.blog.visibility ? '' : 'none' }
     let showOwn = {display: 'none'}
 
@@ -44,10 +38,10 @@ const Toggable = (props) =>  {
       return (
         <div className='blogEntry'>
           <div>
-            <span onClick={toggleVisibility}>{props.blog.title} {props.blog.author}</span>
+            <span><Link to={`/blogs/${props.blog._id}`}>{props.blog.title}</Link></span><span onClick={toggleVisibility}> | {props.blog.author}</span>
           </div>
           <div style={showWhenVisible}>
-            <div style={blogStyle()}>
+            <div style={styles.blogStyle()}>
               {props.children}
               <button onClick={handleVote}>like</button>
               <button  style={showOwn} onClick={deleteBlog}>delete</button>

@@ -5,6 +5,7 @@ import UserComponent from './components/user'
 import NewBlogComponent from './components/newBlogs'
 import UserList from './components/userList'
 import User from './components/oneUser'
+import SimpleBlog from './components/simpleBlog'
 import Footer from './components/footer'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
 import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -32,6 +33,16 @@ class App extends React.Component {
     userById = (id) =>
       this.props.users.find(a => a.id === id)
 
+    blogById = (id) => {
+      console.log('id', id);
+      console.log('props', this.props.blogs);
+      const result = this.props.blogs.blogs.find(a => a._id === id)
+      return result
+
+    }
+
+
+
   render() {
     console.log('props in app', this.props);
     try {
@@ -54,7 +65,10 @@ class App extends React.Component {
                 <Route exact path="/users/:id" render={({match}) =>
                     <User user={this.userById(match.params.id)} />}
                 />
-                <Route path="/blogs" render={() => <Blog />} />
+                <Route exact path="/blogs" render={() => <Blog />} />
+                <Route exact path="/blogs/:id" render={({match}) =>
+                    <SimpleBlog blog={this.blogById(match.params.id)} />}
+                />
                 <Route path="/newblog" render={() => <NewBlogComponent />} />
                 <Footer notification = {this.props.notification}  blogs = {this.props.blogs}/>
               </div>
