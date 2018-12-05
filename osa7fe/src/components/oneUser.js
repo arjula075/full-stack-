@@ -1,4 +1,5 @@
 import React from 'react'
+import UserBlogList from '../components/userBlogList'
 
 const User = ({user}) => {
   console.log('user', user);
@@ -11,6 +12,8 @@ const User = ({user}) => {
   <div>
     <h2>{user.username}</h2>
     <div>Blogeja: {size}</div>
+    <UserBlogList blogs={user.blogs} />
+
   </div>
 )}
 

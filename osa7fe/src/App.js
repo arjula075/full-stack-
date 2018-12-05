@@ -54,10 +54,10 @@ class App extends React.Component {
                 <LoginComponent />
               </div >
               <div style={styles.navStyle(this.props.visibility.showWhenLoggedIn)}>
-                <NavLink  to="/" activeStyle={styles.actStyle()}>home</NavLink > &nbsp;
-                <NavLink  to="/users" activeStyle={styles.actStyle()}>user</NavLink > | &nbsp;
-                <NavLink  to="/blogs" activeStyle={styles.actStyle()}>blogs</NavLink > | &nbsp;
-                <NavLink  to="/newblog" activeStyle={styles.actStyle()}>new blog</NavLink > | &nbsp;
+                <NavLink  to="/" activeStyle={styles.actStyle()}>Home</NavLink > &nbsp;
+                <NavLink  to="/users" activeStyle={styles.actStyle()}>Users</NavLink > | &nbsp;
+                <NavLink  to="/blogs" activeStyle={styles.actStyle()}>Blogs</NavLink > | &nbsp;
+                <NavLink  to="/newblog" activeStyle={styles.actStyle()}>New blog</NavLink > | &nbsp;
               </div>
               <div style={this.props.visibility.showWhenLoggedIn}>
                 <Route exact path="/" render={() => <Blog />} />
