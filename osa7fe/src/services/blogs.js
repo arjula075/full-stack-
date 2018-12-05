@@ -22,6 +22,18 @@ const createBlog = async(blog, token) => {
   return request.then(response => response.data)
 }
 
+const addComment = async(comment, id, token) => {
+  console.log('token',token)
+  console.log('blog',id)
+  console.log('comment',comment)
+  const authString = utils.makeAuthString(token)
+  const head =  {'headers' :{'Authorization': authString}}
+  console.log('head',head)
+
+  const request = axios.post(baseUrl + '/' + id + '/comments', comment, head)
+  return request.then(response => response.data)
+}
+
 const deleteBlog = async(blog, token) => {
   console.log('token',token)
   const authString = utils.makeAuthString(token)
@@ -49,4 +61,5 @@ export default {
   createBlog,
   updateBlog,
   deleteBlog,
+  addComment,
 }

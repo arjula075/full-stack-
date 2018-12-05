@@ -4,12 +4,14 @@ const blogsRouter = require('express').Router()
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const utils = require('../utils/utils')
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({})
     .populate('user')
+    .populate('comments')
     response.json(blogs)
 })
 
@@ -82,6 +84,37 @@ blogsRouter.post('/', async(request, response) => {
     response.status(500).json('vituiks män')
   }
 })
+
+blogsRouter.post('/:id/comments', async(request, response) => {
+  try {
+    console.log('now in be router');
+    validCall = utils.isValidCall(request)
+    if (validCall.statuscode !== 200) {
+      response.status(validCall.statuscode).json(validCall.status)
+      return
+    }
+    console.log('valid call', validCall);
+    // for 4.17, get the first user
+    // for later periods
+    request.body.user = validCall.id
+
+    const comment = new Comment(request.body)
+    console.log('comment', comment);
+    const savedComment = await comment.save()
+    const blogId = await Blog.findById(request.params.id)
+    console.log('blogId', blogId);
+    blogId.comments = blogId.comments.concat(savedComment.id)
+    await blogId.save()
+    response.status(201).json('CREATED')
+
+
+  }
+  catch (err) {
+    console.log(err);
+    response.status(500).json('vituiks män')
+  }
+})
+
 
 blogsRouter.put('/:id', async(request, response) => {
   validCall = utils.isValidCall(request)

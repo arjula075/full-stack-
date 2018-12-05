@@ -10,7 +10,7 @@ import Footer from './components/footer'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
 import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { blogInitialization } from './reducers/blogReducer'
+import { blogInitialization, addComment } from './reducers/blogReducer'
 import { loggedIn } from './reducers/visibilityReducer'
 import { getUsers } from './reducers/usersReducer'
 import { notificationChange } from './reducers/notificationReducer'
@@ -67,7 +67,7 @@ class App extends React.Component {
                 />
                 <Route exact path="/blogs" render={() => <Blog />} />
                 <Route exact path="/blogs/:id" render={({match}) =>
-                    <SimpleBlog blog={this.blogById(match.params.id)} />}
+                    <SimpleBlog blog={this.blogById(match.params.id)} addComment = {this.props.addComment} blogs = {this.props.blogs} notificationChange = {this.props.notificationChange} />}
                 />
                 <Route path="/newblog" render={() => <NewBlogComponent />} />
                 <Footer notification = {this.props.notification}  blogs = {this.props.blogs}/>
@@ -96,5 +96,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps,
-  { blogInitialization, notificationChange, loggedIn, getUsers }
+  { blogInitialization, notificationChange, loggedIn, getUsers, addComment }
 )(App)

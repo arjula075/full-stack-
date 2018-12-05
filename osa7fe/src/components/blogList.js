@@ -13,7 +13,7 @@ const BlogList = (props) => {
             <p>{blog.title}</p>
             <p>{blog.url}</p>
             <p>{blog.likes}</p>
-            <SimpleBlog blog={blog}/>
+            <SimpleBlog blog={blog} addComment = {props.addComment} blogs = {props.bloglist} notificationChange = {props.notificationChange}/>
           </Toggable>
         </div>
       )

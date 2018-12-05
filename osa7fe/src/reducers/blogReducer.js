@@ -49,6 +49,24 @@ export const vote = (content, token) => {
   }
 }
 
+export const addComment = (content, id, token) => {
+  console.log('comment', content);
+  console.log('token', token);
+  console.log('id', id);
+  const result = JSON.parse(JSON.stringify(content))
+  return async (dispatch) => {
+    await blogService.addComment(result, id, token)
+    let blogs = await blogService.getAll(token)
+    blogs = utils.initializedFetchBlogArray(blogs)
+    dispatch({
+      type: 'COMMENT',
+      data: {
+        content: blogs,
+      }
+    })
+  }
+}
+
 export const blogInitialization = (content) => {
   console.log('blog init', content);
   let result = {};
@@ -144,6 +162,12 @@ const reducer = (store = initialState, action) => {
     return result
   }
   if (action.type==='DELETE') {
+    console.log('blogReducer action DELETE', action.data);
+    const result = JSON.parse(JSON.stringify(store))
+    result.blogs = action.data.content
+    return result
+  }
+  if (action.type==='COMMENT') {
     console.log('blogReducer action DELETE', action.data);
     const result = JSON.parse(JSON.stringify(store))
     result.blogs = action.data.content
