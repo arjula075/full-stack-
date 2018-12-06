@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 
 let idToBeDeleted = ''
 let initialUserID = ''
+const comment = {comment: 'What is the flying speed of an unloaded swallow'}
 let rootToken = undefined
 
 
@@ -287,6 +288,42 @@ describe('blog API tests', () => {
 
 		})
 
+		test('before auth nothing can be added (no token)', async () => {
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.send(addedBlog)
+			.expect(401)
+		})
+		test('before auth nothing can be added (bogus token)', async () => {
+			const newBlog = await api
+			.put('/api/blogs/' + idToBeDeleted)
+			.set('data-type', 'application/json')
+			.set('Authorization', 'application/json')
+			.send(addedBlog)
+			.expect(401)
+		})
+
+		test('put updated item there', async () => {
+			const newBlog = await api
+			.post('/api/blogs')
+			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
+			.send(noLikes)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+		})
+
+		// then we get the id
+		test('get the id', async () => {
+		let response = await api
+			.get('/api/blogs')
+			const content = response.body.find(r => r.title === 'This is an ex-parrot')
+			idToBeDeleted = content._id
+			expect(idToBeDeleted).not.toBeUndefined()
+
+		})
+
 		// then we try to update it with different malformatted data
 
 		test('no title', async () => {
@@ -294,6 +331,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.put('/api/blogs/' + idToBeDeleted)
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 			.expect(400)
 		})
@@ -303,6 +341,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.put('/api/blogs/' + idToBeDeleted)
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 			.expect(400)
 		})
@@ -312,6 +351,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.put('/api/blogs/' + idToBeDeleted)
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 			.expect(400)
 		})
@@ -323,6 +363,7 @@ describe('blog API tests', () => {
 			const newBlog = await api
 			.put('/api/blogs/' + idToBeDeleted)
 			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
 			.send(noLikes)
 			.expect(200)
 		})
@@ -366,6 +407,58 @@ describe('user part of API', () => {
 		const usernames = usersAfterOperation.map(u=>u.username)
 		expect(usernames).toContain(newUser.username)
 	})
+
+})
+
+describe('comment part of API', () => {
+
+	test('POST /api/blogs/:id/comments does not succeed with a no password', async () => {
+
+		const comment = {comment: 'this sucks'}
+		await api
+			.post('/api/blogs/' + idToBeDeleted + '/comments')
+			.send(comment)
+			.expect(401)
+
+	})
+
+	test('POST /api/blogs/:id/comments does not succeed with bogus token', async () => {
+
+
+		await api
+			.post('/api/blogs/' + idToBeDeleted + '/comments')
+			.set('data-type', 'application/json')
+			.set('Authorization', 'application/json')
+			.send(comment)
+			.expect(401)
+	})
+
+	test('POST /api/blogs/:id/comments does succeed with proper token', async () => {
+
+		await api
+			.post('/api/blogs/' + idToBeDeleted + '/comments')
+			.set('data-type', 'application/json')
+			.set('Authorization', rootToken)
+			.send(comment)
+			.expect(201)
+	})
+
+	// my api is a bit poor, I allows comment to be added to a bogus blog. So I will not be testing that.
+	// therefore just testing, that added comment is there
+	test('added data is correct', async () => {
+		const response = await api
+			.get('/api/blogs/' + idToBeDeleted)
+		const contents = response.body
+		console.log('contents', contents);
+		for (let i = 0; i < 10; i++) {
+			console.log('contents of blog after added comment', contents);
+		}
+
+		expect(contents.comments.length).toBe(1)
+		expect(contents.comments[0].comment).toMatch(/What is the flying speed of an unloaded swallow/)
+
+	})
+
 
 })
 

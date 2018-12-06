@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// eslint-disable-next-line no-use-before-define
+// eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 const styles = require('./../utils/styles.js')
