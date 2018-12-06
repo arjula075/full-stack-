@@ -1,14 +1,12 @@
 import React from 'react'
 import Blog from './components/Blog'
 import LoginComponent from './components/login'
-import UserComponent from './components/user'
 import NewBlogComponent from './components/newBlogs'
 import UserList from './components/userList'
 import User from './components/oneUser'
 import SimpleBlog from './components/simpleBlog'
 import Footer from './components/footer'
-import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
-import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { blogInitialization, addComment } from './reducers/blogReducer'
 import { loggedIn } from './reducers/visibilityReducer'
@@ -54,7 +52,7 @@ class App extends React.Component {
                 <LoginComponent />
               </div >
               <div style={styles.navStyle(this.props.visibility.showWhenLoggedIn)}>
-                <NavLink  to="/" activeStyle={styles.actStyle()}>Home</NavLink > &nbsp;
+                <NavLink  to="/" activeStyle={styles.actStyle()}>Home</NavLink > | &nbsp;
                 <NavLink  to="/users" activeStyle={styles.actStyle()}>Users</NavLink > | &nbsp;
                 <NavLink  to="/blogs" activeStyle={styles.actStyle()}>Blogs</NavLink > | &nbsp;
                 <NavLink  to="/newblog" activeStyle={styles.actStyle()}>New blog</NavLink > | &nbsp;

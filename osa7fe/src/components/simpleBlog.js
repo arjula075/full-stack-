@@ -1,8 +1,9 @@
 import React from 'react'
 import Comments from '../components/comments'
+import { Button } from 'react-bootstrap'
 
 const SimpleBlog = (props) => {
-  console.log('blog in simpleBlog', blog);
+  console.log('blog in simpleBlog', props.blog);
   if (!props.blog) {
     return null
   }
@@ -44,7 +45,7 @@ const SimpleBlog = (props) => {
                 name="comment"
                 />
           </div>
-          <button type="submit">add comment</button>
+          <Button bsStyle="primary" bsSize="large" type="submit">add comment</Button>
         </form>
         </div>
       </div>

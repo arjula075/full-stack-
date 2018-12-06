@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 
 const Comments = ({ comments }) => (
   <div>
@@ -7,7 +7,7 @@ const Comments = ({ comments }) => (
     <Table  striped>
       <tbody>
         {comments.map(comment =>
-          <tr key={comment.id}>
+          <tr key={comment._id}>
             <td>* {comment.comment}</td>
           </tr>
         )}

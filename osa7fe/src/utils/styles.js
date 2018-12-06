@@ -13,6 +13,7 @@ const actStyle = () => {
     fontWeight: "bold",
     color: "blue"
   }
+  return style
 }
 
 const blogStyle = () => {

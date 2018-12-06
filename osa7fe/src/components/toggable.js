@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
+// eslint-disable-next-line no-use-before-define
+import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 const styles = require('./../utils/styles.js')
 
 const Toggable = (props) =>  {
@@ -43,9 +45,9 @@ const Toggable = (props) =>  {
           <div style={showWhenVisible}>
             <div style={styles.blogStyle()}>
               {props.children}
-              <button onClick={handleVote}>like</button>
-              <button  style={showOwn} onClick={deleteBlog}>delete</button>
-              <button onClick={toggleVisibility}>cancel</button>
+              <Button bsStyle="primary" bsSize="large" onClick={handleVote}>like</Button>
+              <Button bsStyle="primary" bsSize="large" style={showOwn} onClick={deleteBlog}>delete</Button>
+              <Button bsStyle="primary" bsSize="large" onClick={toggleVisibility}>cancel</Button>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { sendBlog } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
+import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 
 class NewBlogComponent extends React.Component {
 
@@ -25,28 +26,24 @@ class NewBlogComponent extends React.Component {
     return (
       <div>
         <form onSubmit={this.createNewBlog}>
-          <div>
-            title
-            <input
-              type="text"
-                name="title"
-                />
-          </div>
-          <div>
-            author
-            <input
-              type="text"
-                name="author"
-                />
-          </div>
-          <div>
-            url
-            <input
-              type="text"
-                name="url"
-                />
-          </div>
-          <button type="submit">create</button>
+        <FormGroup>
+          <ControlLabel>Otsikko:</ControlLabel>
+            <FormControl
+            type="text"
+            name="title"
+            />
+            <ControlLabel>Kirjailija:</ControlLabel>
+            <FormControl
+            name="author"
+            type="text"
+            />
+            <ControlLabel>Verkko-osoite:</ControlLabel>
+            <FormControl
+            name="url"
+            type="text"
+            />
+            <Button bsStyle="success" type="submit">luo uusi blogi</Button>
+          </FormGroup>
         </form>
       </div>
     )

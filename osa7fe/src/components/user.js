@@ -1,4 +1,5 @@
 import React from 'react'
+import {  Button  } from 'react-bootstrap'
 const utils = require('../utils/utils.js')
 
 const UserComponent = (props) => {
@@ -14,10 +15,12 @@ const UserComponent = (props) => {
     if (loggedInUser) {
     return (
       <div>
-        {loggedInUser.username} {loggedInUser.name}
-        <button onClick={logOut}>
+        käyttäjätunnus: {loggedInUser.username} | Käyttäjän nimi:  {loggedInUser.name}
+        <p>
+        <Button onClick={logOut}>
           kirjaudu ulos
-        </button>
+        </Button>
+        </p>
       </div>
     )
   }

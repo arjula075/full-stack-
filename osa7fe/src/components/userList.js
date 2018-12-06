@@ -1,6 +1,6 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
-import { Table, Media, Grid, Row, Col, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { BrowserRouter as Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const UserList = ({ users }) => (
   <div>

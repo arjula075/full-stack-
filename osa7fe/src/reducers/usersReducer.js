@@ -1,5 +1,4 @@
 import userService from './../services/users'
-const utils = require('./../utils/utils.js')
 
 const usersReducer = (state = [], action) => {
 	console.log('usersReducer state', state);

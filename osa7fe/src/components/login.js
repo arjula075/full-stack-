@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { blogInitialization } from './../reducers/blogReducer'
 import { loggedIn } from './../reducers/visibilityReducer'
@@ -29,33 +30,22 @@ class LoginComponent extends React.Component {
 
   render() {
     console.log('props in loging render', this.props);
-    let userName = ''
-    let password = ''
-    if (this.props.blogs.cachedUser) {
-      userName = this.props.blogs.cachedUser.username
-      password = this.props.blogs.cachedUser.password
-    }
     return (
       <div>
         <form onSubmit={this.login}>
-          <div>
-            käyttäjätunnus
-            <input
-              type="text"
-                name="username"
-                //value={userName}
+          <FormGroup>
+          <ControlLabel>käyttäjätunnus:</ControlLabel>
+            <FormControl
+            type="text"
+            name="username"
             />
-          </div>
-          <div>
-            salasana
-            <input
-              type="password"
-              name="password"
-              //value={password}
+            <ControlLabel>salasana:</ControlLabel>
+            <FormControl
+            name="password"
+            type="password"
             />
-            <p></p>
-          </div>
-          <button type="submit">kirjaudu</button>
+            <Button bsStyle="success" type="submit">kirjaudu</Button>
+          </FormGroup>
         </form>
     </div>
     )
