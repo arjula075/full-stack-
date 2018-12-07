@@ -19,6 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
+    "test-jest": "jest",
     "eject": "react-scripts eject",
     "build": "webpack --mode=development"
   },
