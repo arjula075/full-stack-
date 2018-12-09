@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Toggable from '../components/toggable'
 import SimpleBlog from '../components/simpleBlog'
 const styles = require('./../utils/styles.js')
@@ -19,5 +20,12 @@ const BlogList = (props) => {
       )
     })
 )}
+
+SimpleBlog.propTypes = {
+    blog : PropTypes.object.isRequired,
+    addComment : PropTypes.func.isRequired,
+    blogs : PropTypes.object.isRequired,
+    notificationChange : PropTypes.func.isRequired,
+  }
 
 export default BlogList

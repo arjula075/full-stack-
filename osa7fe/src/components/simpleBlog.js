@@ -1,5 +1,6 @@
 import React from 'react'
 import Comments from '../components/comments'
+import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 
 const SimpleBlog = (props) => {
@@ -52,5 +53,12 @@ const SimpleBlog = (props) => {
   )
 
 }
+
+SimpleBlog.propTypes = {
+    blog : PropTypes.object.isRequired,
+    addComment : PropTypes.func.isRequired,
+    blogs : PropTypes.object.isRequired,
+    notificationChange : PropTypes.func.isRequired,
+  }
 
 export default SimpleBlog
